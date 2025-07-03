@@ -39,8 +39,8 @@
                     <a href="">GIỚI THIỆU</a>
                     <div class="tooltip">
                         <ul>
-                            <li><a href="">Tổng quan</a></li>
-                            <li><a href="">Media</a></li>
+                            <li><a href="{{ route('introduces') }}">Tổng quan</a></li>
+                            <li><a href="{{ route('media') }}">Media</a></li>
                         </ul>
                     </div>
                 </li>

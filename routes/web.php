@@ -43,3 +43,11 @@ Route::get('/Workschedule', [WorkScheduleController::class, 'index'])->name('she
 Route::get('/lich-cong-tac', [WorkScheduleController::class, 'calendarView'])->name('calendar');
 
 Route::delete('/items/{id}', [ItemController::class, 'destroy'])->name('items.destroy');
+
+Route::get('/Gioi-thieu', function () {
+    return view('Introduce.overViews');
+})->name('introduces');
+
+Route::get('/Media', function () {
+    return view('Introduce.media');
+})->name('media');
