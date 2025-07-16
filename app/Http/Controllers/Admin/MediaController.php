@@ -9,15 +9,28 @@ class MediaController extends Controller
 {
     public function upload(Request $request)
     {
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:20480',
+            'description' => 'nullable|string|max:255',
+        ]);
+
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $fileName = time().'_'.$file->getClientOriginalName();
-            $file->storeAs('public/media', $fileName);
+
+            // Đảm bảo thư mục tồn tại ở public/media/image
+            $dir = public_path('media/image');
+            if (!file_exists($dir)) {
+                mkdir($dir, 0777, true);
+            }
+
+            // Lưu file vào public/media/image
+            $file->move($dir, $fileName);
 
             $media = Media::create([
                 'file_name' => $fileName,
-                'file_path' => "media/$fileName",
-                'description' => $request->input('description'), // Lưu mô tả
+                'file_path' => "media/image/$fileName",
+                'description' => $request->input('description'),
             ]);
 
             return response()->json([
@@ -27,7 +40,7 @@ class MediaController extends Controller
                 'description' => $media->description,
             ]);
         }
-        return response()->json(['success' => false]);
+        return response()->json(['success' => false, 'message' => 'No image uploaded']);
     }
 
     public function list()
@@ -38,3 +51,4 @@ class MediaController extends Controller
         return response()->json($images);
     }
 }
+

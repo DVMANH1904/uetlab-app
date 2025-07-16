@@ -118,6 +118,9 @@
         font-size: 1.03rem;
         letter-spacing: 0.1px;
     }
+    #modal-image-input {
+        width: 88px;
+    }
     .media-icon {
         font-size: 1.13em;
         vertical-align: middle;
@@ -153,11 +156,78 @@
         .media-header h5 { font-size: 0.97rem; }
         .media-btn { width: 30px; height: 30px; min-width: 30px; min-height: 30px; font-size: 1.05rem;}
     }
+
+    /* --- Tách CSS inline xuống đây --- */
+    .media-title {
+        font-weight:600;
+        color:#222;
+        letter-spacing:0.5px;
+        margin-bottom:18px;
+        text-align:left;
+        padding-left:32px;
+        font-size:1.35rem;
+        background:#fff;
+    }
+    .media-title-icon {
+        margin-right:8px;
+        color:#2563eb;
+    }
+    .media-upload-modal {
+        display:none;
+        position:fixed;
+        z-index:10000;
+        top:0;
+        left:0;
+        width:100vw;
+        height:100vh;
+        background:rgba(0,0,0,0.18);
+        align-items:center;
+        justify-content:center;
+    }
+    .media-upload-modal-content {
+        background:#fff;
+        padding:32px 24px 24px 24px;
+        border-radius:12px;
+        box-shadow:0 8px 32px rgba(0,0,0,0.13);
+        min-width:320px;
+        max-width:90vw;
+        position:relative;
+    }
+    .media-upload-modal-close {
+        position:absolute;
+        top:10px;
+        right:10px;
+        width: 36px;
+        background:none;
+        border:none;
+        font-size:1.3em;
+        color:#888;
+        cursor:pointer;
+    }
+    .media-upload-modal-field {
+        margin-bottom:16px;
+    }
+    .media-upload-modal-label {
+        font-weight:500;
+    }
+    .media-upload-modal-input {
+        width:100%;
+        max-width:320px;
+    }
+    .media-upload-modal-submit {
+        border-radius:8px;
+        width:auto;
+        height:auto;
+        min-width:90px;
+        min-height:36px;
+        font-size:0.9em;
+        padding:0 18px;
+    }
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <div class="container media-container">
-    <h2 style="font-weight:600;color:#222;letter-spacing:0.5px;margin-bottom:18px;text-align:left;padding-left:32px;font-size:1.35rem;background:#fff;">
-        <i class="bi bi-images" style="margin-right:8px;color:#2563eb;"></i>Media Management
+    <h2 class="media-title">
+        <i class="bi bi-images media-title-icon"></i>Media Management
     </h2>
     {{-- <ul class="nav nav-tabs media-tabs" id="mediaTab" role="tablist">
         <li class="nav-item" role="presentation">
@@ -192,19 +262,20 @@
         </div>
 
         {{-- Modal for upload --}}
-        <div id="media-upload-modal" style="display:none;position:fixed;z-index:10000;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.18);align-items:center;justify-content:center;">
-            <div style="background:#fff;padding:32px 24px 24px 24px;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.13);min-width:320px;max-width:90vw;position:relative;">
-                <button id="media-upload-modal-close" style="position:absolute;top:10px;right:12px;background:none;border:none;font-size:1.3em;color:#888;cursor:pointer;"><i class="bi bi-x"></i></button>
+        <div id="media-upload-modal" class="media-upload-modal">
+            <div class="media-upload-modal-content">
+                <button id="media-upload-modal-close" class="media-upload-modal-close"><i class="bi bi-x"></i></button>
                 <form id="modal-upload-image-form" enctype="multipart/form-data">
-                    <div style="margin-bottom:16px;">
-                        <label style="font-weight:500;">Chọn ảnh:</label><br>
+                    <div class="media-upload-modal-field">
+                        <label class="media-upload-modal-label">Chọn ảnh:</label><br>
                         <input type="file" id="modal-image-input" name="image" accept="image/*" required>
+                        <span id="modal-image-filename" style="margin-left:10px;color:#222;font-size:0.98em;"></span>
                     </div>
-                    <div style="margin-bottom:18px;">
-                        <label style="font-weight:500;">Mô tả:</label><br>
-                        <input type="text" id="modal-image-description" name="description" placeholder="Nhập mô tả ảnh" style="width:100%;max-width:320px;">
+                    <div class="media-upload-modal-field">
+                        <label class="media-upload-modal-label">Mô tả:</label><br>
+                        <input type="text" id="modal-image-description" name="description" placeholder="Nhập mô tả ảnh" class="media-upload-modal-input">
                     </div>
-                    <button type="submit" class="media-btn" style="border-radius:8px;width:auto;height:auto;min-width:90px;min-height:36px;font-size:1.07em;padding:0 18px;"><i class="bi bi-upload"></i> Upload</button>
+                    <button type="submit" class="media-btn media-upload-modal-submit"><i class="bi bi-upload" style="padding-right: 5px"></i>Upload</button>
                 </form>
             </div>
         </div>
@@ -221,13 +292,25 @@
             document.getElementById('media-upload-modal-close').onclick = function() {
                 document.getElementById('media-upload-modal').style.display = 'none';
                 document.getElementById('modal-upload-image-form').reset();
+                resetModalFileName();
             };
             document.getElementById('media-upload-modal').addEventListener('click', function(e) {
                 if(e.target === this) {
                     this.style.display = 'none';
                     document.getElementById('modal-upload-image-form').reset();
+                    resetModalFileName();
                 }
             });
+
+            // Hiển thị tên file khi chọn file
+            document.getElementById('modal-image-input').addEventListener('change', function() {
+                const fileName = this.files && this.files.length > 0 ? this.files[0].name : '';
+                document.getElementById('modal-image-filename').textContent = fileName;
+            });
+
+            function resetModalFileName() {
+                document.getElementById('modal-image-filename').textContent = '';
+            }
 
             // Submit upload trong modal
             document.getElementById('modal-upload-image-form').addEventListener('submit', function(e) {
@@ -250,11 +333,13 @@
                     }
                     document.getElementById('media-upload-modal').style.display = 'none';
                     document.getElementById('modal-upload-image-form').reset();
+                    resetModalFileName(); // Xóa tên file sau khi upload
                 })
                 .catch(() => {
                     showMediaToast('Có lỗi xảy ra!');
                     document.getElementById('media-upload-modal').style.display = 'none';
                     document.getElementById('modal-upload-image-form').reset();
+                    resetModalFileName(); // Xóa tên file sau khi upload
                 });
             });
 
@@ -268,7 +353,7 @@
                     } else {
                         list.innerHTML = images.map(img =>
                             `<div style="display:inline-block;text-align:center;margin:6px;">
-                                <img src="/storage/${img.file_path}" alt="${img.file_name}" style="max-width:120px;margin-bottom:4px;border-radius:6px;border:1px solid #eee;">
+                                <img src="/media/image/${img.file_name}" alt="${img.file_name}" style="max-width:120px;margin-bottom:4px;border-radius:6px;border:1px solid #eee;">
                                 <div style="font-size:0.97em;color:#555;max-width:120px;word-break:break-word;">${img.description ?? ''}</div>
                             </div>`
                         ).join('');
