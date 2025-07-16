@@ -99,8 +99,8 @@
                 </a>
             </li>
             <li>
-                <a href="#" class="{{ request()->is('compose*') ? 'active' : '' }}">
-                    <i class="bi bi-pencil-square"></i><span>Compose</span>
+                <a href="{{ route('adminmedia') }}" class="{{ request()->is('compose*') ? 'active' : '' }}">
+                    <i class="bi bi-pencil-square"></i><span>Media</span>
                 </a>
             </li>
             <li>

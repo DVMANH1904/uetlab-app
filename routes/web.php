@@ -51,3 +51,9 @@ Route::get('/Gioi-thieu', function () {
 Route::get('/Media', function () {
     return view('Introduce.media');
 })->name('media');
+Route::get('/admin-Media', function () {
+    return view('Admin.media');
+})->name('adminmedia');
+
+Route::post('/admin/media/upload', [App\Http\Controllers\Admin\MediaController::class, 'upload'])->name('admin.media.upload');
+Route::get('/admin/media/list', [App\Http\Controllers\Admin\MediaController::class, 'list'])->name('admin.media.list');
