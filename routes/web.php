@@ -57,3 +57,6 @@ Route::get('/admin-Media', function () {
 
 Route::post('/admin/media/upload', [App\Http\Controllers\Admin\MediaController::class, 'upload'])->name('admin.media.upload');
 Route::get('/admin/media/list', [App\Http\Controllers\Admin\MediaController::class, 'list'])->name('admin.media.list');
+
+Route::post('/admin/media/upload_video', [App\Http\Controllers\Admin\MediaController::class, 'upload_video'])->name('admin.media.upload_video');
+Route::get('/admin/media/list_video', [App\Http\Controllers\Admin\MediaController::class, 'list_video'])->name('admin.media.list_video');

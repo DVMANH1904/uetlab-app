@@ -42,13 +42,53 @@ class MediaController extends Controller
         }
         return response()->json(['success' => false, 'message' => 'No image uploaded']);
     }
+    public function upload_video(Request $request)
+    {
+        $request->validate([
+            'video' => 'required|mimetypes:video/mp4,video/avi,video/mpeg,video/quicktime|max:51200',
+            'description' => 'nullable|string|max:255',
+        ]);
 
+        if ($request->hasFile('video')) {
+            $file = $request->file('video');
+            $fileName = time().'_'.$file->getClientOriginalName();
+
+            // Đảm bảo thư mục tồn tại ở public/media/video
+            $dir = public_path('media/video');
+            if (!file_exists($dir)) {
+                mkdir($dir, 0777, true);
+            }
+
+            // Lưu file vào public/media/video
+            $file->move($dir, $fileName);
+
+            $media = Media::create([
+                'file_name' => $fileName,
+                'file_path' => "media/video/$fileName",
+                'description' => $request->input('description'),
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'file_path' => $media->file_path,
+                'file_name' => $media->file_name,
+                'description' => $media->description,
+            ]);
+        }
+        return response()->json(['success' => false, 'message' => 'No video uploaded']);
+    }
     public function list()
     {
         // Lấy tất cả ảnh, trả về cả description
         $images = Media::select('id', 'file_name', 'file_path', 'description')->orderByDesc('id')->get();
 
         return response()->json($images);
+    }
+     public function list_video()
+    {
+        $videos = Media::select('id', 'file_name', 'file_path', 'description')->orderByDesc('id')->get();
+
+        return response()->json($videos);
     }
 }
 

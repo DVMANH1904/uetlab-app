@@ -348,10 +348,16 @@
                 .then(res => res.json())
                 .then(images => {
                     const list = document.getElementById('media-images-list');
-                    if(images.length === 0) {
+                    // Chỉ lấy các file có đuôi ảnh hợp lệ
+                    const validExt = ['jpg','jpeg','png','gif','svg','webp'];
+                    const filtered = images.filter(img => {
+                        const ext = img.file_name.split('.').pop().toLowerCase();
+                        return validExt.includes(ext);
+                    });
+                    if(filtered.length === 0) {
                         list.innerHTML = `<div class="media-empty"><i class="bi bi-emoji-frown"></i> No images yet.</div>`;
                     } else {
-                        list.innerHTML = images.map(img =>
+                        list.innerHTML = filtered.map(img =>
                             `<div style="display:inline-block;text-align:center;margin:6px;">
                                 <img src="/media/image/${img.file_name}" alt="${img.file_name}" style="max-width:120px;margin-bottom:4px;border-radius:6px;border:1px solid #eee;">
                                 <div style="font-size:0.97em;color:#555;max-width:120px;word-break:break-word;">${img.description ?? ''}</div>
@@ -363,18 +369,129 @@
             loadImages();
         });
         </script>
-        {{-- Manage videos --}}
-        <div class="tab-pane fade media-tab-pane" id="videos" role="tabpanel">
-            {{-- Manage videos --}}
+        {{-- videos manager  --}}
+        <div class="tab-pane fade show active media-tab-pane" id="videos" role="tabpanel">
             <div class="media-header">
                 <h5><i class="bi bi-camera-video media-icon"></i> Videos</h5>
-                <button class="media-btn" title="Add Video"><i class="bi bi-plus"></i></button>
+                <form id="upload-video-form" enctype="multipart/form-data" style="display:inline;">
+                    <input type="file" id="video-input" name="video" accept="video/*" style="display:none;">
+                    <button type="button" class="media-btn" title="Add Videos" id="add-video-btn"><i class="bi bi-plus"></i></button>
+                </form>
             </div>
-            <div>
-                {{-- Display video list here --}}
+            <div id="media-videos-list">
                 <div class="media-empty"><i class="bi bi-emoji-frown"></i> No videos yet.</div>
             </div>
         </div>
+
+        <div id="video-upload-modal" class="media-upload-modal">
+            <div class="media-upload-modal-content">
+                <button id="video-upload-modal-close" class="media-upload-modal-close"><i class="bi bi-x"></i></button>
+                <form id="modal-upload-video-form" enctype="multipart/form-data">
+                    <div class="media-upload-modal-field">
+                        <label class="media-upload-modal-label">Chọn video:</label><br>
+                        <input type="file" id="modal-video-input" name="video" accept="video/*" required>
+                        <span id="modal-video-filename" style="margin-left:10px;color:#222;font-size:0.98em;"></span>
+                    </div>
+                    <div class="media-upload-modal-field">
+                        <label class="media-upload-modal-label">Mô tả:</label><br>
+                        <input type="text" id="modal-video-description" name="description" placeholder="Nhập mô tả video" class="media-upload-modal-input">
+                    </div>
+                    <button type="submit" class="media-btn media-upload-modal-submit"><i class="bi bi-upload" style="padding-right: 5px"></i>Upload</button>
+                </form>
+            </div>
+        </div>
+        <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // Khi ấn dấu + thì hiện modal upload video
+            document.getElementById('add-video-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('video-upload-modal').style.display = 'flex';
+            });
+
+            // Đóng modal khi ấn nút X hoặc click ra ngoài
+            document.getElementById('video-upload-modal-close').onclick = function() {
+                document.getElementById('video-upload-modal').style.display = 'none';
+                document.getElementById('modal-upload-video-form').reset();
+                resetVideoModalFileName();
+            };
+            document.getElementById('video-upload-modal').addEventListener('click', function(e) {
+                if(e.target === this) {
+                    this.style.display = 'none';
+                    document.getElementById('modal-upload-video-form').reset();
+                    resetVideoModalFileName();
+                }
+            });
+
+            // Hiển thị tên file khi chọn video
+            document.getElementById('modal-video-input').addEventListener('change', function() {
+                const fileName = this.files && this.files.length > 0 ? this.files[0].name : '';
+                document.getElementById('modal-video-filename').textContent = fileName;
+            });
+
+            function resetVideoModalFileName() {
+                document.getElementById('modal-video-filename').textContent = '';
+            }
+
+            // Submit upload video trong modal
+            document.getElementById('modal-upload-video-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                fetch('{{ route('admin.media.upload_video') }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.success) {
+                        showMediaToast('Upload video thành công!');
+                        loadVideos();
+                    } else {
+                        showMediaToast('Upload video thất bại!');
+                    }
+                    document.getElementById('video-upload-modal').style.display = 'none';
+                    document.getElementById('modal-upload-video-form').reset();
+                    resetVideoModalFileName();
+                })
+                .catch(() => {
+                    showMediaToast('Có lỗi xảy ra!');
+                    document.getElementById('video-upload-modal').style.display = 'none';
+                    document.getElementById('modal-upload-video-form').reset();
+                    resetVideoModalFileName();
+                });
+            });
+
+            function loadVideos() {
+                fetch('{{ route('admin.media.list_video') }}')
+                .then(res => res.json())
+                .then(videos => {
+                    const list = document.getElementById('media-videos-list');
+                    // Chỉ lấy các file có đuôi video hợp lệ
+                    const validExt = ['mp4','avi','mov','mkv','webm','mpeg'];
+                    const filtered = videos.filter(video => {
+                        const ext = video.file_name.split('.').pop().toLowerCase();
+                        return validExt.includes(ext);
+                    });
+                    if(filtered.length === 0) {
+                        list.innerHTML = `<div class="media-empty"><i class="bi bi-emoji-frown"></i> No videos yet.</div>`;
+                    } else {
+                        list.innerHTML = filtered.map(video =>
+                            `<div style="display:inline-block;text-align:center;margin:6px;">
+                                <video src="/media/video/${video.file_name}" controls style="max-width:180px;margin-bottom:4px;border-radius:6px;border:1px solid #eee;"></video>
+                                <div style="font-size:0.97em;color:#555;max-width:180px;word-break:break-word;">${video.description ?? ''}</div>
+                            </div>`
+                        ).join('');
+                    }
+                });
+            }
+            loadVideos();
+        });
+        </script>
+
+        {{-- Manage documents & publications --}}
         <div class="tab-pane fade media-tab-pane" id="documents" role="tabpanel">
             {{-- Manage documents & publications --}}
             <div class="media-header">
@@ -434,3 +551,4 @@
 </script>
 
 @endsection
+
