@@ -493,16 +493,142 @@
 
         {{-- Manage documents & publications --}}
         <div class="tab-pane fade media-tab-pane" id="documents" role="tabpanel">
-            {{-- Manage documents & publications --}}
             <div class="media-header">
                 <h5><i class="bi bi-file-earmark-text media-icon"></i> Documents & Publications</h5>
-                <button class="media-btn" title="Add Document/Publication"><i class="bi bi-plus"></i></button>
+                <form id="upload-document-form" enctype="multipart/form-data" style="display:inline;">
+                    <input type="file" id="document-input" name="document" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt" style="display:none;">
+                    <button type="button" class="media-btn" title="Add Document/Publication" id="add-document-btn"><i class="bi bi-plus"></i></button>
+                </form>
             </div>
-            <div>
-                {{-- Display document & publication list here --}}
+            <div id="media-documents-list">
                 <div class="media-empty"><i class="bi bi-emoji-frown"></i> No documents or publications yet.</div>
             </div>
         </div>
+
+        <div id="document-upload-modal" class="media-upload-modal">
+            <div class="media-upload-modal-content">
+                <button id="document-upload-modal-close" class="media-upload-modal-close"><i class="bi bi-x"></i></button>
+                <form id="modal-upload-document-form" enctype="multipart/form-data">
+                    <div class="media-upload-modal-field">
+                        <label class="media-upload-modal-label">Chọn tài liệu:</label><br>
+                        <input type="file" id="modal-document-input" name="document" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt" required>
+                        <span id="modal-document-filename" style="margin-left:10px;color:#222;font-size:0.98em;"></span>
+                    </div>
+                    <div class="media-upload-modal-field">
+                        <label class="media-upload-modal-label">Mô tả:</label><br>
+                        <input type="text" id="modal-document-description" name="description" placeholder="Nhập mô tả tài liệu" class="media-upload-modal-input">
+                    </div>
+                    <button type="submit" class="media-btn media-upload-modal-submit"><i class="bi bi-upload" style="padding-right: 5px"></i>Upload</button>
+                </form>
+            </div>
+        </div>
+        <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Khi ấn dấu + thì hiện modal upload document
+            document.getElementById('add-document-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('document-upload-modal').style.display = 'flex';
+            });
+
+            // Đóng modal khi ấn nút X hoặc click ra ngoài
+            document.getElementById('document-upload-modal-close').onclick = function() {
+                document.getElementById('document-upload-modal').style.display = 'none';
+                document.getElementById('modal-upload-document-form').reset();
+                resetDocumentModalFileName();
+            };
+            document.getElementById('document-upload-modal').addEventListener('click', function(e) {
+                if(e.target === this) {
+                    this.style.display = 'none';
+                    document.getElementById('modal-upload-document-form').reset();
+                    resetDocumentModalFileName();
+                }
+            });
+
+            // Hiển thị tên file khi chọn document
+            document.getElementById('modal-document-input').addEventListener('change', function() {
+                const fileName = this.files && this.files.length > 0 ? this.files[0].name : '';
+                document.getElementById('modal-document-filename').textContent = fileName;
+            });
+
+            function resetDocumentModalFileName() {
+                document.getElementById('modal-document-filename').textContent = '';
+            }
+
+            // Submit upload document trong modal
+            document.getElementById('modal-upload-document-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                fetch('{{ route('admin.media.upload_document') }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.success) {
+                        showMediaToast('Upload tài liệu thành công!');
+                        loadDocuments();
+                    } else {
+                        showMediaToast('Upload tài liệu thất bại!');
+                    }
+                    document.getElementById('document-upload-modal').style.display = 'none';
+                    document.getElementById('modal-upload-document-form').reset();
+                    resetDocumentModalFileName();
+                })
+                .catch(() => {
+                    showMediaToast('Có lỗi xảy ra!');
+                    document.getElementById('document-upload-modal').style.display = 'none';
+                    document.getElementById('modal-upload-document-form').reset();
+                    resetDocumentModalFileName();
+                });
+            });
+
+            function loadDocuments() {
+                fetch('{{ route('admin.media.list_document') }}')
+                .then(res => res.json())
+                .then(documents => {
+                    const list = document.getElementById('media-documents-list');
+                    // Chỉ lấy các file có đuôi tài liệu hợp lệ
+                    const validExt = ['pdf','doc','docx','ppt','pptx','xls','xlsx','txt'];
+                    const extIcon = {
+                        pdf: 'bi-file-earmark-pdf',
+                        doc: 'bi-file-earmark-word',
+                        docx: 'bi-file-earmark-word',
+                        ppt: 'bi-file-earmark-ppt',
+                        pptx: 'bi-file-earmark-ppt',
+                        xls: 'bi-file-earmark-excel',
+                        xlsx: 'bi-file-earmark-excel',
+                        txt: 'bi-file-earmark-text'
+                    };
+                    const filtered = documents.filter(doc => {
+                        const ext = doc.file_name.split('.').pop().toLowerCase();
+                        return validExt.includes(ext);
+                    });
+                    if(filtered.length === 0) {
+                        list.innerHTML = `<div class="media-empty"><i class="bi bi-emoji-frown"></i> No documents or publications yet.</div>`;
+                    } else {
+                        list.innerHTML = filtered.map(doc => {
+                            const ext = doc.file_name.split('.').pop().toLowerCase();
+                            const icon = extIcon[ext] || 'bi-file-earmark';
+                            return `<div style="display:inline-block;vertical-align:top;margin:10px 12px 18px 12px;max-width:170px;">
+                                <a href="/media/document/${doc.file_name}" target="_blank"
+                                   style="display:flex;flex-direction:column;align-items:center;text-decoration:none;background:#f6f8fa;border-radius:14px;padding:18px 10px 12px 10px;box-shadow:0 2px 12px rgba(40,53,147,0.07);transition:box-shadow 0.18s;"
+                                   onmouseover="this.style.boxShadow='0 4px 18px rgba(40,53,147,0.13)';"
+                                   onmouseout="this.style.boxShadow='0 2px 12px rgba(40,53,147,0.07)';">
+                                    <div style="font-size:0.97em;color:#555;text-align:center;word-break:break-word;margin-bottom:7px;max-width:140px;">${doc.description ?? ''}</div>
+                                    <i class="bi ${icon}" style="font-size:3.2em;color:#2563eb;margin-bottom:10px;"></i>
+                                    <span style="font-size:1.01em;color:#222;font-weight:500;text-align:center;word-break:break-word;max-width:140px;">${doc.file_name}</span>
+                                </a>
+                            </div>`;
+                        }).join('');
+                    }
+                });
+            }
+            loadDocuments();
+        });
+        </script>
     </div>
 </div>
 <script>

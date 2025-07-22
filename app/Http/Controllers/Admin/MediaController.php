@@ -77,6 +77,41 @@ class MediaController extends Controller
         }
         return response()->json(['success' => false, 'message' => 'No video uploaded']);
     }
+    public function upload_document(Request $request)
+    {
+        $request->validate([
+            'document' => 'required|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,txt|max:20480',
+            'description' => 'nullable|string|max:255',
+        ]);
+
+        if ($request->hasFile('document')) {
+            $file = $request->file('document');
+            $fileName = time().'_'.$file->getClientOriginalName();
+
+            // Đảm bảo thư mục tồn tại ở public/media/document
+            $dir = public_path('media/document');
+            if (!file_exists($dir)) {
+                mkdir($dir, 0777, true);
+            }
+
+            // Lưu file vào public/media/document
+            $file->move($dir, $fileName);
+
+            $media = Media::create([
+                'file_name' => $fileName,
+                'file_path' => "media/document/$fileName",
+                'description' => $request->input('description'),
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'file_path' => $media->file_path,
+                'file_name' => $media->file_name,
+                'description' => $media->description,
+            ]);
+        }
+        return response()->json(['success' => false, 'message' => 'No document uploaded']);
+    }
     public function list()
     {
         // Lấy tất cả ảnh, trả về cả description
@@ -84,11 +119,26 @@ class MediaController extends Controller
 
         return response()->json($images);
     }
-     public function list_video()
+    public function list_video()
     {
-        $videos = Media::select('id', 'file_name', 'file_path', 'description')->orderByDesc('id')->get();
+        $videos = Media::select('id', 'file_name', 'file_path', 'description')
+            ->where(function($query) {
+                $query->where('file_path', 'like', 'media/video/%');
+            })
+            ->orderByDesc('id')->get();
 
         return response()->json($videos);
+    }
+    public function list_document()
+    {
+        // Lấy tất cả document, trả về cả description
+        $documents = Media::select('id', 'file_name', 'file_path', 'description')
+            ->where(function($query) {
+                $query->where('file_path', 'like', 'media/document/%');
+            })
+            ->orderByDesc('id')->get();
+
+        return response()->json($documents);
     }
 }
 
