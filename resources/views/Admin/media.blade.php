@@ -357,12 +357,23 @@
                     if(filtered.length === 0) {
                         list.innerHTML = `<div class="media-empty"><i class="bi bi-emoji-frown"></i> No images yet.</div>`;
                     } else {
-                        list.innerHTML = filtered.map(img =>
+                        list.innerHTML = filtered.map((img, idx) =>
                             `<div style="display:inline-block;text-align:center;margin:6px;">
-                                <img src="/media/image/${img.file_name}" alt="${img.file_name}" style="max-width:120px;margin-bottom:4px;border-radius:6px;border:1px solid #eee;">
+                                <img src="/media/image/${img.file_name}" alt="${img.file_name}"
+                                    style="max-width:120px;margin-bottom:4px;border-radius:6px;border:1px solid #eee;cursor:pointer;"
+                                    class="media-detail-img" data-index="${idx}">
                                 <div style="font-size:0.97em;color:#555;max-width:120px;word-break:break-word;">${img.description ?? ''}</div>
                             </div>`
                         ).join('');
+                        // Thêm sự kiện click cho ảnh
+                        setTimeout(() => {
+                            document.querySelectorAll('.media-detail-img').forEach(imgEl => {
+                                imgEl.onclick = function() {
+                                    const index = parseInt(this.getAttribute('data-index'));
+                                    showImageDetail(filtered, index);
+                                };
+                            });
+                        }, 50);
                     }
                 });
             }
@@ -666,7 +677,6 @@
 
     // Show toast notification function
     function showMediaToast(message) {
-        // Remove old toast if exists
         document.querySelectorAll('.media-toast').forEach(t => t.remove());
         const toast = document.createElement('div');
         toast.className = 'media-toast';
@@ -674,7 +684,67 @@
         document.body.appendChild(toast);
         setTimeout(() => { toast.remove(); }, 2200);
     }
+
+    // Thêm modal chi tiết ảnh kiểu Instagram
+    function showImageDetail(images, index) {
+        const modal = document.getElementById('media-image-detail-modal');
+        const imgTag = document.getElementById('media-image-detail-img');
+        const descTag = document.getElementById('media-image-detail-desc');
+        const prevBtn = document.getElementById('media-image-detail-prev');
+        const nextBtn = document.getElementById('media-image-detail-next');
+        let currentIndex = index;
+
+        function updateModal(idx) {
+            const img = images[idx];
+            imgTag.src = `/media/image/${img.file_name}`;
+            imgTag.alt = img.file_name;
+            descTag.textContent = img.description ?? '';
+            prevBtn.style.display = idx > 0 ? 'inline-block' : 'none';
+            nextBtn.style.display = idx < images.length - 1 ? 'inline-block' : 'none';
+        }
+
+        updateModal(currentIndex);
+        modal.style.display = 'flex';
+
+        prevBtn.onclick = function() {
+            if(currentIndex > 0) {
+                currentIndex--;
+                updateModal(currentIndex);
+            }
+        };
+        nextBtn.onclick = function() {
+            if(currentIndex < images.length - 1) {
+                currentIndex++;
+                updateModal(currentIndex);
+            }
+        };
+        document.getElementById('media-image-detail-close').onclick = function() {
+            modal.style.display = 'none';
+            imgTag.src = '';
+            descTag.textContent = '';
+        };
+        modal.onclick = function(e) {
+            if(e.target === modal) {
+                modal.style.display = 'none';
+                imgTag.src = '';
+                descTag.textContent = '';
+            }
+        };
+    }
 </script>
 
+<div id="media-image-detail-modal" style="display:none;position:fixed;z-index:10001;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.82);align-items:center;justify-content:center;">
+    <div id="media-image-detail-content" style="background:#fff;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.19);max-width:96vw;max-height:90vh;display:flex;flex-direction:column;align-items:center;position:relative;padding:0;">
+        <button id="media-image-detail-close" style="position:absolute;top:10px;right:10px;width:36px;height:36px;background:none;border:none;font-size:1.7em;color:#888;cursor:pointer;z-index:2;">
+            <i class="bi bi-x"></i>
+        </button>
+        <img id="media-image-detail-img" src="" alt="" style="max-width:80vw;max-height:70vh;border-radius:14px;box-shadow:0 2px 12px rgba(40,53,147,0.13);margin-top:32px;">
+        <div id="media-image-detail-desc" style="margin:18px 0 24px 0;font-size:1.08em;color:#222;font-weight:500;text-align:center;max-width:700px;word-break:break-word;"></div>
+        <div id="media-image-detail-nav" style="display:flex;gap:18px;margin-bottom:18px;">
+            <button id="media-image-detail-prev" style="background:#2563eb;color:#fff;border:none;border-radius:50%;width:38px;height:38px;font-size:1.3em;display:none;"><i class="bi bi-chevron-left"></i></button>
+            <button id="media-image-detail-next" style="background:#2563eb;color:#fff;border:none;border-radius:50%;width:38px;height:38px;font-size:1.3em;display:none;"><i class="bi bi-chevron-right"></i></button>
+        </div>
+    </div>
+</div>
 @endsection
 

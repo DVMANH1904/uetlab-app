@@ -48,7 +48,7 @@ Route::get('/Gioi-thieu', function () {
     return view('Introduce.overViews');
 })->name('introduces');
 
-Route::get('/Media', function () {
+Route::get('/Media-view', function () {
     return view('Introduce.media');
 })->name('media');
 Route::get('/admin-Media', function () {
