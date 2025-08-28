@@ -28,4 +28,20 @@ class Post extends Model
     {
         return $this->belongsTo(User::class);
     }
+    // ...
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class)->latest();
+    }
+
+    // Kiểm tra xem user hiện tại đã like bài viết chưa
+    public function likedBy(User $user)
+    {
+        return $this->likes->contains('user_id', $user->id);
+    }
 }

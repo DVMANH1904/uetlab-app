@@ -1,3 +1,7 @@
+@php
+    use Illuminate\Support\Str;
+    use Illuminate\Support\Facades\Auth;
+@endphp
 <!-- Make sure to include Alpine.js for this component to work -->
 <!-- You can add this to your main layout file's <head> section -->
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
@@ -41,7 +45,26 @@
             <!-- Post Feed -->
             <div class="mt-8 space-y-6">
                 @foreach ($posts as $post)
-                    <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-4">
+                    <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-4"
+                         x-data="{
+                            commentsOpen: false,
+                            liked: {{ $post->liked_by_user ? 'true' : 'false' }},
+                            likesCount: {{ $post->likes_count }},
+                            async toggleLike() {
+                                const response = await fetch('{{ route('posts.like', $post) }}', {
+                                    method: 'POST',
+                                    headers: {
+                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                        'Accept': 'application/json',
+                                        'Content-Type': 'application/json'
+                                    },
+                                });
+                                const data = await response.json();
+                                this.liked = data.liked;
+                                this.likesCount = data.likes_count;
+                            }
+                         }">
+                        <!-- Post Header -->
                         <div class="flex items-center space-x-4">
                             <div class="flex-shrink-0">
                                 <img class="h-10 w-10 rounded-full object-cover" src="{{ $post->user->profile_photo_url }}" alt="{{ $post->user->name }}">
@@ -51,9 +74,11 @@
                                 <p class="text-sm text-gray-500">{{ $post->created_at->diffForHumans() }}</p>
                             </div>
                         </div>
+                        <!-- Post Content -->
                         <div class="mt-4 text-gray-800 whitespace-pre-wrap">
                             <p>{{ $post->content }}</p>
                         </div>
+                        <!-- Post Media -->
                         @if ($post->media_path)
                             <div class="mt-4">
                                 @if (Str::startsWith($post->media_type, 'image'))
@@ -66,6 +91,56 @@
                                 @endif
                             </div>
                         @endif
+
+                        <!-- Post Stats -->
+                        <div class="mt-4 flex justify-between items-center text-sm text-gray-500">
+                            <div><span x-text="likesCount"></span> Likes</div>
+                            <div>{{ $post->comments->count() }} Comments</div>
+                        </div>
+
+                        <hr class="my-2">
+
+                        <!-- Post Actions -->
+                        <div class="flex justify-around">
+                            <!-- Like Button -->
+                            <button @click="toggleLike()" type="button" class="flex items-center space-x-2 p-2 rounded-lg transition w-full justify-center" :class="liked ? 'text-blue-600' : 'text-gray-600 hover:bg-gray-100'">
+                                <svg class="w-6 h-6" :class="{'fill-current': liked}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 18.734V8.266L10.293 5l1.414 1.414a2 2 0 01.586 1.414V10zM7 21V8.266M7 8.266L3.707 5 2.293 6.414a2 2 0 00-.586 1.414V17a2 2 0 002 2h2.017a2 2 0 001.983-1.734L7 18.734z"></path>
+                                </svg>
+                                <span class="font-semibold">Thích</span>
+                            </button>
+                            <!-- Comment Button -->
+                            <button @click="commentsOpen = !commentsOpen" class="flex items-center space-x-2 text-gray-600 hover:bg-gray-100 p-2 rounded-lg transition w-full justify-center">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                                <span class="font-semibold">Bình luận</span>
+                            </button>
+                        </div>
+
+                        <!-- Comments Section -->
+                        <div x-show="commentsOpen" class="mt-4 space-y-4">
+                            <!-- Existing Comments -->
+                            @foreach($post->comments as $comment)
+                                <div class="flex items-start space-x-3">
+                                    <img class="h-8 w-8 rounded-full object-cover" src="{{ $comment->user->profile_photo_url }}" alt="{{ $comment->user->name }}">
+                                    <div class="flex-1">
+                                        <div class="bg-gray-100 rounded-xl p-3">
+                                            <p class="font-semibold text-sm text-gray-800">{{ $comment->user->name }}</p>
+                                            <p class="text-sm text-gray-700">{{ $comment->content }}</p>
+                                        </div>
+                                        <p class="text-xs text-gray-500 mt-1">{{ $comment->created_at->diffForHumans() }}</p>
+                                    </div>
+                                </div>
+                            @endforeach
+
+                            <!-- New Comment Form -->
+                            <div class="flex items-center space-x-3">
+                                <img class="h-8 w-8 rounded-full object-cover" src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}">
+                                <form action="{{ route('posts.comments.store', $post) }}" method="POST" class="w-full">
+                                    @csrf
+                                    <input name="content" class="w-full bg-gray-100 border-transparent rounded-full py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Viết bình luận..." required>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 @endforeach
             </div>

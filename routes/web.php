@@ -10,6 +10,8 @@ use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\LikeController;
+use App\Http\Controllers\CommentController;
 
 Route::get('/', function () {
     return view('home');
@@ -84,3 +86,5 @@ Route::get('/home', [PostController::class, 'index'])->middleware(['auth'])->nam
 
 // Route để lưu bài đăng mới
 Route::post('/posts', [PostController::class, 'store'])->middleware(['auth'])->name('posts.store');
+Route::post('/posts/{post}/like', [LikeController::class, 'store'])->middleware(['auth'])->name('posts.like');
+Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->middleware(['auth'])->name('posts.comments.store');

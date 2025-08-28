@@ -10,12 +10,20 @@ use Illuminate\Support\Facades\Auth;
 class PostController extends Controller
 {
     // Hiển thị tất cả bài đăng
+    // ...
     public function index()
     {
-        // Lấy tất cả bài đăng, sắp xếp mới nhất và kèm thông tin user
-        $posts = Post::with('user')->latest()->get();
-        return view('home', compact('posts')); // Giả sử view của bạn là home.blade.php
+        $posts = Post::with(['user', 'comments.user'])
+                    ->withCount('likes') // Lấy số lượt thích
+                    ->withExists(['likes as liked_by_user' => function ($query) {
+                        $query->where('user_id', auth()->id());
+                    }]) // Kiểm tra user hiện tại đã thích chưa
+                    ->latest()
+                    ->get();
+
+        return view('home', compact('posts'));
     }
+// ...
 
     // app/Http/Controllers/PostController.php
     public function store(Request $request)
