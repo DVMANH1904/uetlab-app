@@ -13,8 +13,6 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     use HasApiTokens;
-
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
     use HasProfilePhoto;
     use Notifiable;
@@ -63,5 +61,13 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get all of the posts for the user.
+     */
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
     }
 }

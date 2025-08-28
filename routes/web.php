@@ -8,8 +8,8 @@ use App\Http\Controllers\WorkScheduleController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\Admin\MediaController;
-
-
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PostController;
 
 Route::get('/', function () {
     return view('home');
@@ -52,6 +52,9 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         return view('Admin.media');
     })->name('adminmedia');
 
+    Route::get('/student', function () {
+        return view('Admin.student');
+    })->name('adminstudent');
     // Media Upload
     Route::post('/media/upload', [MediaController::class, 'upload'])->name('admin.media.upload');
     Route::get('/media/list', [MediaController::class, 'list'])->name('admin.media.list');
@@ -65,21 +68,6 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/media/list_document', [MediaController::class, 'list_document'])->name('admin.media.list_document');
 });
 
-/*
-|--------------------------------------------------------------------------
-| Custom Logout
-|--------------------------------------------------------------------------
-*/
-// Route::post('/custom-logout', function(Request $request) {
-//     Auth::logout();
-//     $request->session()->invalidate();
-//     $request->session()->regenerateToken();
-//     return redirect('/Login/index.php'); // hoặc route('login') nếu dùng Laravel Auth
-// })->name('logout');
-// Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-// Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
-// Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
@@ -89,3 +77,10 @@ Route::middleware([
         return view('dashboard');
     })->name('dashboard');
 });
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+// Route cho trang chủ, hiển thị bài đăng
+Route::get('/home', [PostController::class, 'index'])->middleware(['auth'])->name('home');
+
+// Route để lưu bài đăng mới
+Route::post('/posts', [PostController::class, 'store'])->middleware(['auth'])->name('posts.store');
