@@ -3,48 +3,27 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Media; // Quan trọng: Import Media model
-use App\Models\User;  // Giữ lại nếu bạn vẫn cần đếm Student
+use App\Models\LabStudent; // Thêm Model LabStudent
+use App\Models\Post;         // Thêm Model Post
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $studentCount = User::count();
+        // Đếm tổng số bài viết
+        $postCount = Post::count();
 
-        // Đếm các file có đuôi là hình ảnh
-        $imageCount = Media::where('file_name', 'LIKE', '%.jpg')
-                            ->orWhere('file_name', 'LIKE', '%.jpeg')
-                            ->orWhere('file_name', 'LIKE', '%.png')
-                            ->orWhere('file_name', 'LIKE', '%.gif')
-                            ->orWhere('file_name', 'LIKE', '%.webp')
-                            ->orWhere('file_name', 'LIKE', '%.svg')
-                            ->count();
+        // Đếm sinh viên theo từng trạng thái
+        $activeStudentCount = LabStudent::where('status', 'active')->count();
+        $graduatedStudentCount = LabStudent::where('status', 'graduated')->count();
+        $inactiveStudentCount = LabStudent::where('status', 'inactive')->count();
 
-        // Đếm các file có đuôi là video
-        $videoCount = Media::where('file_name', 'LIKE', '%.mp4')
-                            ->orWhere('file_name', 'LIKE', '%.mov')
-                            ->orWhere('file_name', 'LIKE', '%.avi')
-                            ->orWhere('file_name', 'LIKE', '%.wmv')
-                            ->count();
-
-        // Đếm các file có đuôi là tài liệu
-        $documentCount = Media::where('file_name', 'LIKE', '%.pdf')
-                                ->orWhere('file_name', 'LIKE', '%.doc')
-                                ->orWhere('file_name', 'LIKE', '%.docx')
-                                ->orWhere('file_name', 'LIKE', '%.xls')
-                                ->orWhere('file_name', 'LIKE', '%.xlsx')
-                                ->orWhere('file_name', 'LIKE', '%.ppt')
-                                ->orWhere('file_name', 'LIKE', '%.pptx')
-                                ->count();
-
-
-        // --- Truyền tất cả dữ liệu sang view ---
-        return view('dashboard', compact(
-            'studentCount',
-            'imageCount',
-            'videoCount',
-            'documentCount'
-        ));
+        // Truyền tất cả các biến chứa số liệu sang view
+        return view('dashboard', [
+            'postCount' => $postCount,
+            'activeStudentCount' => $activeStudentCount,
+            'graduatedStudentCount' => $graduatedStudentCount,
+            'inactiveStudentCount' => $inactiveStudentCount,
+        ]);
     }
 }
