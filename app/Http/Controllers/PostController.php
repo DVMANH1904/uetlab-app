@@ -13,47 +13,48 @@ class PostController extends Controller
     // ...
     public function index()
     {
-        $posts = Post::with(['user', 'comments.user'])
-                    ->withCount('likes') // Lấy số lượt thích
+        // Eager load the 'media' relationship
+        $posts = Post::with(['user', 'comments.user', 'media'])
+                    ->withCount('likes')
                     ->withExists(['likes as liked_by_user' => function ($query) {
                         $query->where('user_id', auth()->id());
-                    }]) // Kiểm tra user hiện tại đã thích chưa
+                    }])
                     ->latest()
                     ->get();
 
         return view('home', compact('posts'));
     }
-// ...
 
-    // app/Http/Controllers/PostController.php
     public function store(Request $request)
     {
+        // Validate for an array of files
         $request->validate([
             'content' => 'nullable|string',
-            'media' => 'nullable|file|mimes:jpg,jpeg,png,gif,mp4,mov,ogg,qt|max:20000', // max 20MB
+            'media'   => 'nullable|array',
+            'media.*' => 'file|mimes:jpg,jpeg,png,gif,mp4,mov,ogg,qt|max:20480', // 20MB Max
         ]);
 
-        $mediaPath = null;
-        $mediaType = null;
-
-        if ($request->hasFile('media')) {
-            $file = $request->file('media');
-            $mediaPath = $file->store('posts', 'public');
-            $mediaType = $file->getMimeType();
-        }
-
-        // Ngăn không cho đăng bài nếu không có cả nội dung và media
-        if (empty($request->content) && !$mediaPath) {
+        // Prevent posting if both content and media are empty
+        if (empty($request->content) && !$request->hasFile('media')) {
             return back()->withErrors(['error' => 'Post must have content or media.']);
         }
 
-        Auth::user()->posts()->create([
+        // First, create the post
+        $post = Auth::user()->posts()->create([
             'content' => $request->content,
-            'media_path' => $mediaPath,
-            'media_type' => $mediaType,
         ]);
+
+        // If there are media files, loop through and save each one
+        if ($request->hasFile('media')) {
+            foreach ($request->file('media') as $file) {
+                $path = $file->store('posts', 'public');
+                $post->media()->create([
+                    'media_path' => $path,
+                    'media_type' => $file->getMimeType(),
+                ]);
+            }
+        }
 
         return redirect()->route('home');
     }
-
 }

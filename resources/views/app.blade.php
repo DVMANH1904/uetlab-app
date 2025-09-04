@@ -9,7 +9,9 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
+         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/spotlight.js/dist/css/spotlight.min.css" />
+        <link rel="stylesheet" href="https://unpkg.com/spotlight.js/dist/spotlight.min.css" />
+        <script src="https://unpkg.com/spotlight.js/dist/spotlight.min.js" defer></script>
         <!-- Scripts -->
         @routes
         @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
@@ -17,5 +19,6 @@
     </head>
     <body class="font-sans antialiased">
         @inertia
+
     </body>
 </html>
