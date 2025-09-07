@@ -60,57 +60,60 @@
             <h2 class="text-2xl font-bold mb-6">{{ $studentId ? 'Cập nhật thông tin' : 'Thêm Sinh viên mới' }}</h2>
             <form wire:submit.prevent="store">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {{-- Các trường thông tin cơ bản --}}
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Họ và Tên</label>
-                        <input type="text" wire:model="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                        <input type="text" wire:model.defer="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                         @error('name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Mã số sinh viên</label>
-                        <input type="text" wire:model="student_code" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                        <input type="text" wire:model.defer="student_code" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                         @error('student_code') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                     </div>
-                    <div>
+                    <div class="md:col-span-2">
                         <label class="block text-sm font-medium text-gray-700">Email</label>
-                        <input type="email" wire:model="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                        <input type="email" wire:model.defer="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                         @error('email') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                     </div>
+                    {{-- Các trường thông tin khác --}}
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Ngành học</label>
-                        <input type="text" wire:model="major" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                        <input type="text" wire:model.defer="major" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Ngày vào lab</label>
-                        <input type="date" wire:model="join_date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                        <input type="date" wire:model.defer="join_date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                         @error('join_date') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Trạng thái</label>
-                        <select wire:model="status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                            <option value="active">Đang hoạt động (Active)</option>
-                            <option value="graduated">Đã tốt nghiệp (Graduated)</option>
-                            <option value="inactive">Ngừng hoạt động (Inactive)</option>
-                        </select>
-                    </div>
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700">Đề tài/Dự án</label>
-                        <textarea wire:model="project_topic" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
-                    </div>
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700">Ghi chú</label>
-                        <textarea wire:model="notes" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
-                    </div>
+
+                    {{-- BẮT ĐẦU THÊM MỚI: Chỉ hiển thị khi tạo mới sinh viên --}}
+                    @if(!$studentId)
+                        <hr class="md:col-span-2">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Mật khẩu</label>
+                            <input type="password" wire:model.defer="password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                            @error('password') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Xác nhận Mật khẩu</label>
+                            <input type="password" wire:model.defer="password_confirmation" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                        </div>
+                        <hr class="md:col-span-2">
+                    @endif
+                    {{-- KẾT THÚC THÊM MỚI --}}
+
                 </div>
                 <div class="mt-8 flex justify-end">
                     <button type="button" wire:click="$set('isModalOpen', false)" class="px-4 py-2 bg-gray-300 rounded-md mr-4">Hủy</button>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md">{{ $studentId ? 'Cập nhật' : 'Lưu' }}</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md">{{ $studentId ? 'Cập nhật' : 'Tạo tài khoản & Lưu' }}</button>
                 </div>
             </form>
         </div>
     </div>
     @endif
 
-    @if($isDetailModalOpen && $selectedStudent) {{-- <<< ĐIỀU KIỆN ĐÚNG NẰM Ở ĐÂY --}}
+    @if($isDetailModalOpen && $selectedStudent)
     <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center" x-data @keydown.escape.window="$wire.closeDetailModal()">
         <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-2xl">
             <div class="flex justify-between items-center mb-6">

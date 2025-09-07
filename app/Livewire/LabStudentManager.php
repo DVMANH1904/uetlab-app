@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Livewire;
-
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 use App\Models\LabStudent;
 use Livewire\WithPagination;
@@ -15,7 +16,7 @@ class LabStudentManager extends Component
     // Thuộc tính cho modal Thêm/Sửa
     public $isModalOpen = false;
     public $studentId, $name, $student_code, $email, $major, $join_date, $status, $project_topic, $notes;
-
+    public $password, $password_confirmation;
     // Thuộc tính cho modal Chi tiết
     public $isDetailModalOpen = false;
     public $selectedStudentId = null;
@@ -87,27 +88,80 @@ class LabStudentManager extends Component
 
     public function store()
     {
-        $validatedData = $this->validate([
+        // 1. Định nghĩa các quy tắc validation cơ bản
+        $rules = [
             'name' => 'required|string|max:255',
             'student_code' => 'required|string|max:255|unique:lab_students,student_id,' . $this->studentId,
-            'email' => 'required|email|max:255|unique:lab_students,email,' . $this->studentId,
             'join_date' => 'required|date',
             'major' => 'nullable|string|max:255',
             'status' => 'required|in:active,graduated,inactive',
-            'project_topic' => 'nullable|string',
-            'notes' => 'nullable|string',
-        ]);
+        ];
 
-        $validatedData['student_id'] = $validatedData['student_code'];
-        unset($validatedData['student_code']);
+        // 2. Thêm validation cho email và mật khẩu tùy theo trường hợp
+        if ($this->studentId) {
+            // Khi CẬP NHẬT: Kiểm tra email phải là duy nhất, ngoại trừ user hiện tại
+            $student = LabStudent::find($this->studentId);
+            $rules['email'] = 'required|email|max:255|unique:users,email,' . $student?->user_id;
+        } else {
+            // Khi TẠO MỚI: Email phải là duy nhất và mật khẩu là bắt buộc
+            $rules['email'] = 'required|email|max:255|unique:users,email';
+            $rules['password'] = 'required|string|min:8|confirmed';
+        }
 
-        LabStudent::updateOrCreate(['id' => $this->studentId], $validatedData);
+        $this->validate($rules);
 
-        session()->flash('message', $this->studentId ? 'Cập nhật thành công.' : 'Thêm sinh viên thành công.');
+        // 3. Logic xử lý chính
+        if ($this->studentId) {
+            // --- TRƯỜNG HỢP: CẬP NHẬT SINH VIÊN ĐÃ CÓ ---
+            $student = LabStudent::find($this->studentId);
+
+            // Cập nhật thông tin trong bảng 'lab_students'
+            $student->update([
+                'name' => $this->name,
+                'student_id' => $this->student_code,
+                'major' => $this->major,
+                'join_date' => $this->join_date,
+                'status' => $this->status,
+                // Cập nhật các trường khác...
+            ]);
+
+            // Cập nhật cả thông tin trong bảng 'users' liên quan
+            if ($student->user) {
+                $student->user()->update([
+                    'name' => $this->name,
+                    'email' => $this->email,
+                ]);
+            }
+
+            session()->flash('message', 'Cập nhật thông tin sinh viên thành công.');
+
+        } else {
+            // --- TRƯỜNG HỢP: TẠO MỚI SINH VIÊN VÀ TÀI KHOẢN ĐĂNG NHẬP ---
+            // a. Tạo tài khoản User trước
+            $newUser = User::create([
+                'name' => $this->name,
+                'email' => $this->email,
+                'password' => Hash::make($this->password), // Mã hóa mật khẩu
+                'role' => 'student' // Gán vai trò mặc định
+            ]);
+
+            // b. Tạo hồ sơ LabStudent và liên kết với User vừa tạo
+            $newUser->labStudentProfile()->create([
+                'name' => $this->name,
+                'student_id' => $this->student_code,
+                'email' => $this->email, // Lưu email vào cả 2 bảng để tiện truy vấn
+                'major' => $this->major,
+                'join_date' => $this->join_date,
+                'status' => $this->status,
+            ]);
+
+            session()->flash('message', 'Tạo tài khoản và hồ sơ sinh viên thành công.');
+        }
+
+        // 4. Đóng modal và reset form
         $this->isModalOpen = false;
         $this->resetInputFields();
     }
-
     public function confirmDelete($id)
     {
         LabStudent::find($id)->delete();

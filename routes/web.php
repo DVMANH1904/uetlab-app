@@ -13,7 +13,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LabStudentController;
-
+use App\Http\Controllers\StudentReportController;
 /*
 |--------------------------------------------------------------------------
 | Routes công khai
@@ -85,4 +85,5 @@ Route::middleware([
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
     Route::post('/posts/{post}/like', [LikeController::class, 'store'])->name('posts.like');
     Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('posts.comments.store');
+    Route::get('/my-reports', [StudentReportController::class, 'index'])->name('student.reports');
 });

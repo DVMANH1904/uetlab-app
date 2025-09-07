@@ -75,4 +75,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Like::class);
     }
+    // app/Models/User.php
+    public function labStudentProfile()
+    {
+        return $this->hasOne(LabStudent::class);
+    }
 }
