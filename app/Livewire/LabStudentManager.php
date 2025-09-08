@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 use App\Models\LabStudent;
 use Livewire\WithPagination;
-
+use Illuminate\Support\Facades\Gate;
 class LabStudentManager extends Component
 {
     use WithPagination;
@@ -59,10 +59,14 @@ class LabStudentManager extends Component
         $this->status = 'active';
         $this->project_topic = '';
         $this->notes = '';
+        $this->password = '';
+        $this->password_confirmation = '';
+        $this->roles = 'student';
     }
 
     public function create()
     {
+        abort_if(Gate::denies('isAdmin'), 403);
         $this->resetInputFields();
         $this->closeDetailModal();
         $this->isModalOpen = true;
@@ -70,6 +74,7 @@ class LabStudentManager extends Component
 
     public function edit($id)
     {
+        abort_if(Gate::denies('isAdmin'), 403);
         $student = LabStudent::findOrFail($id);
 
         $this->studentId = $id;
@@ -81,13 +86,15 @@ class LabStudentManager extends Component
         $this->status = $student->status;
         $this->project_topic = $student->project_topic;
         $this->notes = $student->notes;
-
+        $this->role = $student->user ? $student->user->role : 'student';
         $this->closeDetailModal();
         $this->isModalOpen = true;
+
     }
 
     public function store()
     {
+        abort_if(Gate::denies('isAdmin'), 403);
         // 1. Định nghĩa các quy tắc validation cơ bản
         $rules = [
             'name' => 'required|string|max:255',
@@ -95,6 +102,7 @@ class LabStudentManager extends Component
             'join_date' => 'required|date',
             'major' => 'nullable|string|max:255',
             'status' => 'required|in:active,graduated,inactive',
+            'role' => 'required|in:admin,lecturer,student',
         ];
 
         // 2. Thêm validation cho email và mật khẩu tùy theo trường hợp
@@ -127,6 +135,11 @@ class LabStudentManager extends Component
 
             // Cập nhật cả thông tin trong bảng 'users' liên quan
             if ($student->user) {
+                if (auth()->id() !== $student->user()->id) {
+                    $student->user()->update([
+                        'role' => $this->role,
+                    ]);
+                }
                 $student->user()->update([
                     'name' => $this->name,
                     'email' => $this->email,
@@ -164,6 +177,7 @@ class LabStudentManager extends Component
     }
     public function confirmDelete($id)
     {
+        abort_if(Gate::denies('isAdmin'), 403);
         LabStudent::find($id)->delete();
         session()->flash('message', 'Đã xóa sinh viên.');
     }
