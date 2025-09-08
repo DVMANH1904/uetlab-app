@@ -26,10 +26,11 @@
                     <x-nav-link :href="route('adminmedia')" :active="request()->routeIs('adminmedia')">
                         {{ __('Media') }}
                     </x-nav-link>
-
-                    <x-nav-link href="{{ route('student.reports') }}" :active="request()->routeIs('student.reports')">
-                        {{ __('Nộp Báo Cáo') }}
-                    </x-nav-link>
+                    @can('isStudent')
+                        <x-nav-link href="{{ route('student.reports') }}" :active="request()->routeIs('student.reports')">
+                            {{ __('Nộp Báo Cáo') }}
+                        </x-nav-link>
+                    @endcan
                 </div>
             </div>
 

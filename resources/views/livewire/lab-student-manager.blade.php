@@ -24,9 +24,13 @@
                     <th class="py-3 px-4 text-left">Họ và Tên</th>
                     <th class="py-3 px-4 text-left">MSSV</th>
                     <th class="py-3 px-4 text-left">Ngành học</th>
-                    <th class="py-3 px-4 text-left">Đề tài</th>
+                    {{-- <th class="py-3 px-4 text-left">Đề tài</th> --}}
                     <th class="py-3 px-4 text-left">Trạng thái</th>
-                    <th class="py-3 px-4 text-left">Hành động</th>
+                    @can('isAdmin')
+                        <th class="py-3 px-4 text-left">Hành động</th>
+                    @else
+                        <th class="py-3 px-4 text-left">Ngày vào lab</th>
+                    @endcan
                 </tr>
             </thead>
             <tbody>
@@ -39,7 +43,7 @@
                         </td>
                         <td class="py-3 px-4">{{ $student->student_id }}</td>
                         <td class="py-3 px-4">{{ $student->major }}</td>
-                        <td class="py-3 px-4">{{ Str::limit($student->project_topic, 30) }}</td>
+                        {{-- <td class="py-3 px-4">{{ Str::limit($student->project_topic, 30) }}</td> --}}
                         <td class="py-3 px-4"><span class="px-2 py-1 text-xs font-semibold rounded-full {{ $student->status == 'active' ? 'bg-green-200 text-green-800' : ($student->status == 'graduated' ? 'bg-blue-200 text-blue-800' : 'bg-gray-200 text-gray-800') }}">{{ ucfirst($student->status) }}</span></td>
 
                         <td class="py-3 px-4">
@@ -51,7 +55,7 @@
                                 <button wire:click="edit({{ $student->id }})" class="text-indigo-600 hover:text-indigo-900 ml-4">Sửa</button>
                                 <button wire:click="confirmDelete({{ $student->id }})" class="text-red-600 hover:text-red-900 ml-4">Xóa</button>
                             @else
-                                <span class="text-gray-400 italic">Không có quyền</span>
+                                {{ \Carbon\Carbon::parse($student->join_date)->format('d/m/Y') }}
                             @endcan
                         </td>
                     </tr>
@@ -94,6 +98,7 @@
                         <label class="block text-sm font-medium text-gray-700">Ngành học</label>
                         <input type="text" wire:model.defer="major" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                     </div>
+
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Ngày vào lab</label>
                         <input type="date" wire:model.defer="join_date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
@@ -111,6 +116,10 @@
                         @if($studentId && optional(\App\Models\LabStudent::find($studentId)->user)->id == auth()->id())
                             <p class="text-xs text-gray-500 mt-1">Bạn không thể thay đổi vai trò của chính mình.</p>
                         @endif
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700">Đề tài/Dự án</label>
+                        <textarea wire:model.defer="project_topic" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
                     </div>
                     {{-- BẮT ĐẦU THÊM MỚI: Chỉ hiển thị khi tạo mới sinh viên --}}
                     @if(!$studentId)

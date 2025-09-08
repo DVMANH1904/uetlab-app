@@ -20,6 +20,7 @@ class LabStudentManager extends Component
     // Thuộc tính cho modal Chi tiết
     public $isDetailModalOpen = false;
     public $selectedStudentId = null;
+    public $role;
 
     public function render()
     {
@@ -61,7 +62,7 @@ class LabStudentManager extends Component
         $this->notes = '';
         $this->password = '';
         $this->password_confirmation = '';
-        $this->roles = 'student';
+        $this->role = 'student';
     }
 
     public function create()
@@ -130,12 +131,13 @@ class LabStudentManager extends Component
                 'major' => $this->major,
                 'join_date' => $this->join_date,
                 'status' => $this->status,
-                // Cập nhật các trường khác...
+                'project_topic' => $this->project_topic,
+                'notes' => $this->notes,
             ]);
 
             // Cập nhật cả thông tin trong bảng 'users' liên quan
             if ($student->user) {
-                if (auth()->id() !== $student->user()->id) {
+                if (auth()->id() !== $student->user->id) {
                     $student->user()->update([
                         'role' => $this->role,
                     ]);
