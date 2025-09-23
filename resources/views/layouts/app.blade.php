@@ -75,5 +75,6 @@
             document.addEventListener('DOMContentLoaded', initializeFancybox);
             document.addEventListener('livewire:navigated', initializeFancybox);
         </script>
+        @stack('scripts')
     </body>
 </html>

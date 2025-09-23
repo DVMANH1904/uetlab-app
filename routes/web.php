@@ -14,6 +14,7 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LabStudentController;
 use App\Http\Controllers\StudentReportController;
+use App\Http\Controllers\ReportCalendarController;
 /*
 |--------------------------------------------------------------------------
 | Routes công khai
@@ -44,10 +45,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         return view('Admin.admin');
     })->name('admin');
 
-    // === BẮT ĐẦU SỬA LỖI: ĐƯA ROUTE SINH VIÊN VÀO ĐÂY ===
     Route::get('/students', [LabStudentController::class, 'index'])->name('students.index');
-    // === KẾT THÚC SỬA LỖI ===
-
     Route::get('/Workschedule', [WorkScheduleController::class, 'index'])->name('schedule');
     Route::post('/schedule/store', [WorkScheduleController::class, 'store'])->name('admin.schedule.store');
     Route::delete('/items/{id}', [ItemController::class, 'destroy'])->name('items.destroy');
@@ -86,4 +84,7 @@ Route::middleware([
     Route::post('/posts/{post}/like', [LikeController::class, 'store'])->name('posts.like');
     Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('posts.comments.store');
     Route::get('/my-reports', [StudentReportController::class, 'index'])->name('student.reports');
+    Route::get('/admin/reports-calendar', [ReportCalendarController::class, 'index'])->name('admin.reports.calendar');
+    Route::get('/admin/reports-calendar/data', [ReportCalendarController::class, 'data'])->name('admin.reports.data');
+    Route::get('/reports/{report}', [ReportCalendarController::class, 'show'])->name('reports.show');
 });
