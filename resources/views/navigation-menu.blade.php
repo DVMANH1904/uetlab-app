@@ -17,9 +17,10 @@
                             {{ __('Dashboard') }}
                         </x-nav-link>
                     @endcan
-                    <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
+                    <x-nav-link href="{{ route('home') }}" :active="request()->routeIs('home')">
                         {{ __('Home') }}
                     </x-nav-link>
+                    
                     <x-nav-link :href="route('adminstudent')" :active="request()->routeIs('adminstudent')">
                         {{ __('Student') }}
                     </x-nav-link>
@@ -176,6 +177,7 @@
                 {{ __('Báo Cáo') }}
             </x-responsive-nav-link>
             @endcan
+            
         </div>
 
         <!-- Responsive Settings Options -->

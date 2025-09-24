@@ -32,7 +32,9 @@ Route::get('/Gioi-thieu', function () {
 Route::get('/Media-view', function () {
     return view('Introduce.media');
 })->name('media');
-
+Route::get('/', function () {
+    return view('public.hci-lab');
+})->name('hci-lab');
 
 /*
 |--------------------------------------------------------------------------
@@ -78,8 +80,8 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/', [PostController::class, 'index'])->name('home');
-    Route::get('/home', [PostController::class, 'index']);
+    Route::get('/home', [PostController::class, 'index'])->name('home');
+    // Route::get('/home', [PostController::class, 'index']);
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
     Route::post('/posts/{post}/like', [LikeController::class, 'store'])->name('posts.like');
     Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('posts.comments.store');
