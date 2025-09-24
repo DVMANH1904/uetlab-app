@@ -87,4 +87,5 @@ Route::middleware([
     Route::get('/admin/reports-calendar', [ReportCalendarController::class, 'index'])->name('admin.reports.calendar');
     Route::get('/admin/reports-calendar/data', [ReportCalendarController::class, 'data'])->name('admin.reports.data');
     Route::get('/reports/{report}', [ReportCalendarController::class, 'show'])->name('reports.show');
+    Route::post('/reports/{report}/respond', [ReportCalendarController::class, 'storeResponse'])->name('reports.respond');
 });

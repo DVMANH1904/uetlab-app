@@ -12,6 +12,7 @@ class StudentReportForm extends Component
     use WithFileUploads;
 
     public LabStudent $student;
+    public $title;
     public $weeklyReports = [];
 
     // Thuộc tính cho form
@@ -35,6 +36,7 @@ class StudentReportForm extends Component
     public function saveReport()
     {
         $this->validate([
+            'title' => 'required|string|max:255',
             'report_date' => 'required|date',
             'report_content' => 'required|string',
             'report_file' => 'nullable|file|max:10240',
@@ -46,6 +48,7 @@ class StudentReportForm extends Component
         }
 
         $this->student->weeklyReports()->create([
+            'title' => $this->title,
             'report_date' => $this->report_date,
             'content' => $this->report_content,
             'file_path' => $filePath,

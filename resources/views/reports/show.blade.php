@@ -46,5 +46,39 @@
 
             </div>
         </div>
+        <div class="mt-8 p-6 bg-gray-100 rounded-lg shadow-inner">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">Phản hồi báo cáo</h3>
+            <form action="{{ route('reports.respond', $report) }}" method="POST">
+                @csrf
+                <div>
+                    <label for="response_content" class="block text-sm font-medium text-gray-700">Nội dung phản hồi:</label>
+                    <textarea name="response_content" id="response_content" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"></textarea>
+                </div>
+                <div class="mt-4">
+                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring focus:ring-blue-300 disabled:opacity-25 transition">
+                        Gửi phản hồi
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        @if($report->responses->isNotEmpty())
+            <div class="mt-8">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Lịch sử phản hồi</h3>
+                @foreach ($report->responses as $response)
+                    <div class="bg-white p-4 mb-4 rounded-lg shadow-sm border border-gray-200">
+                        <div class="flex items-center justify-between text-sm text-gray-600">
+                            <p>
+                                <strong>{{ $response->user->name }}</strong>
+                                <span class="text-xs text-gray-400 ml-2">({{ $response->created_at->format('d/m/Y H:i') }})</span>
+                            </p>
+                        </div>
+                        <div class="mt-2 text-gray-800">
+                            <p>{{ $response->content }}</p>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endif
     </div>
 </x-app-layout>

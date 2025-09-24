@@ -41,5 +41,23 @@ class ReportCalendarController extends Controller
         }
         return response()->json($events);
     }
+    public function storeResponse(Request $request, WeeklyReport $report)
+    {
+        // 1. Xác thực dữ liệu
+        $request->validate([
+            'response_content' => 'required|string|min:5',
+        ], [
+            'response_content.required' => 'Vui lòng nhập nội dung phản hồi.',
+            'response_content.min' => 'Nội dung phản hồi cần ít nhất 5 ký tự.',
+        ]);
 
+        // 2. Tạo và lưu phản hồi mới
+        $report->responses()->create([
+            'user_id' => auth()->id(),
+            'content' => $request->response_content,
+        ]);
+
+        // 3. Quay trở lại trang chi tiết với thông báo thành công
+        return back()->with('success', 'Đã gửi phản hồi thành công!');
+    }
 }

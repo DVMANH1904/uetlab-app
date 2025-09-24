@@ -12,9 +12,11 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
+                    @can('isAdmin')
+                        <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
+                    @endcan
                     <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
                         {{ __('Home') }}
                     </x-nav-link>
@@ -165,6 +167,28 @@
             <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')">
+                {{ __('Home') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('adminstudent')" :active="request()->routeIs('adminstudent')">
+                {{ __('Student') }}
+            </x-responsive-nav-link>
+
+            <!-- <x-responsive-nav-link :href="route('adminmedia')" :active="request()->routeIs('adminmedia')">
+                {{ __('Media') }}
+            </x-responsive-nav-link> -->
+            @can('isStudent')
+                <x-responsive-nav-link href="{{ route('student.reports') }}" :active="request()->routeIs('student.reports')">
+                    {{ __('Nộp Báo Cáo') }}
+                </x-responsive-nav-link>
+            @endcan
+
+            @can('isAdmin')
+            <x-responsive-nav-link :href="route('admin.reports.calendar')" :active="request()->routeIs('admin.reports.calendar')">
+                {{ __('Báo Cáo') }}
+            </x-responsive-nav-link>
+            @endcan
         </div>
 
         <!-- Responsive Settings Options -->
