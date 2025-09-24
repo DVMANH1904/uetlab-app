@@ -32,11 +32,34 @@ class NotificationBell extends Component
         }
     }
 
-    public function markAsRead()
+    public function markAsRead($notificationId = null)
     {
         if (Auth::check()) {
-            Auth::user()->unreadNotifications->markAsRead();
-            $this->loadNotifications(); // Tải lại để cập nhật count về 0
+            $user = Auth::user();
+
+            if ($notificationId) {
+                // LUỒNG 1: Click vào một thông báo cụ thể
+                $notification = $user->notifications()->find($notificationId);
+
+                if ($notification) {
+                    // 1. Đánh dấu là đã đọc
+                    $notification->markAsRead();
+
+                    // 2. Lấy ID báo cáo từ dữ liệu và chuyển hướng người dùng
+                    $data = json_decode($notification->data, true);
+                    
+                    // Kiểm tra an toàn xem report_id có tồn tại không
+                    if (isset($data['report_id'])) {
+                        return redirect()->route('reports.show', $data['report_id']);
+                    }
+                }
+            } else {
+                // LUỒNG 2: Click vào nút "Đánh dấu tất cả đã đọc"
+                $user->unreadNotifications->markAsRead();
+                
+                // Chỉ cần tải lại component để cập nhật giao diện, không chuyển hướng
+                $this->loadNotifications();
+            }
         }
     }
 

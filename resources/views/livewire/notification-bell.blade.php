@@ -23,13 +23,17 @@
             <div class="px-4 py-2 flex justify-between items-center border-b">
                 <span class="font-semibold">Thông báo</span>
                 @if($unreadCount > 0)
-                    <button wire:click="markAsRead" class="text-xs text-blue-500 hover:underline">Đánh dấu đã đọc</button>
+                    {{-- NÚT NÀY SẼ GỌI markAsRead() MÀ KHÔNG CÓ THAM SỐ --}}
+                    <button wire:click="markAsRead" class="text-xs text-blue-500 hover:underline">Đánh dấu tất cả đã đọc</button>
                 @endif
             </div>
             <div class="max-h-96 overflow-y-auto">
                 @forelse ($notifications as $notification)
                     @php $data = json_decode($notification->data); @endphp
-                    <a href="{{ route('reports.show', $data->report_id) }}" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 @if(is_null($notification->read_at)) bg-blue-50 @endif">
+                    <a href="{{ route('reports.show', $data->report_id) }}" 
+                       wire:click.prevent="markAsRead('{{ $notification->id }}')"
+                       class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 @if(is_null($notification->read_at)) bg-blue-50 @endif">
+                        
                         @if($notification->type === 'new_report')
                             <p><strong>{{ $data->student_name }}</strong> vừa nộp báo cáo mới:</p>
                             <p class="truncate font-normal">{{ $data->report_title }}</p>
@@ -49,3 +53,4 @@
         </div>
     </div>
 </div>
+
