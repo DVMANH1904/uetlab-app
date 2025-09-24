@@ -18,11 +18,11 @@
                         </x-nav-link>
                     @endcan
                     <x-nav-link href="{{ route('home') }}" :active="request()->routeIs('home')">
-                        {{ __('Home') }}
+                        {{ __('Diễn Đàn') }}
                     </x-nav-link>
                     
                     <x-nav-link :href="route('adminstudent')" :active="request()->routeIs('adminstudent')">
-                        {{ __('Student') }}
+                        {{ __('Sinh viên') }}
                     </x-nav-link>
                     @can('isStudent')
                         <x-nav-link href="{{ route('student.reports') }}" :active="request()->routeIs('student.reports')">
@@ -162,7 +162,7 @@
                 </x-responsive-nav-link>
             @endcan
             <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')">
-                {{ __('Home') }}
+                {{ __('Diễn Đàn') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('adminstudent')" :active="request()->routeIs('adminstudent')">
                 {{ __('Student') }}

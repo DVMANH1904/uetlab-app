@@ -76,13 +76,14 @@
         <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-2xl">
             <h2 class="text-2xl font-bold mb-6">{{ $studentId ? 'Cập nhật thông tin' : 'Thêm Sinh viên mới' }}</h2>
             <form wire:submit.prevent="store">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="max-h-[70vh] overflow-y-auto pr-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {{-- Các trường thông tin cơ bản --}}
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Họ và Tên</label>
-                        <input type="text" wire:model.defer="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                        @error('name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                    </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Họ và Tên</label>
+                            <input type="text" wire:model.defer="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                            @error('name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                        </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Mã số sinh viên</label>
                         <input type="text" wire:model.defer="student_code" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
@@ -121,7 +122,7 @@
                         <label class="block text-sm font-medium text-gray-700">Đề tài/Dự án</label>
                         <textarea wire:model.defer="project_topic" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
                     </div>
-                    {{-- BẮT ĐẦU THÊM MỚI: Chỉ hiển thị khi tạo mới sinh viên --}}
+                    {{-- Chỉ hiển thị khi tạo mới sinh viên --}}
                     @if(!$studentId)
                         <hr class="md:col-span-2">
                         <div>
@@ -135,9 +136,9 @@
                         </div>
                         <hr class="md:col-span-2">
                     @endif
-                    {{-- KẾT THÚC THÊM MỚI --}}
-
                 </div>
+                </div>
+                
                 <div class="mt-8 flex justify-end">
                     <button type="button" wire:click="$set('isModalOpen', false)" class="px-4 py-2 bg-gray-300 rounded-md mr-4">Hủy</button>
                     <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md">{{ $studentId ? 'Cập nhật' : 'Tạo tài khoản & Lưu' }}</button>
