@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HCI Lab - Định Hình Tương Lai Tương Tác Người-Máy</title>
+    <title>HMI Lab - Định Hình Tương Lai Tương Tác Người-Máy</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -158,7 +158,7 @@
                 <div class="flex-shrink-0">
                     <a href="#" class="flex items-center space-x-2">
                          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-brain-circuit"><path d="M12 5a3 3 0 1 0-5.993.142"/><path d="M18 5a3 3 0 1 0-5.993.142"/><path d="M5 8.142A3 3 0 1 0 5 14"/><path d="M19 8.142A3 3 0 1 0 19 14"/><path d="M12 13a3 3 0 1 0-5.993.142"/><path d="M18 13a3 3 0 1 0-5.993.142"/><path d="M5 19a3 3 0 1 0 0-5.858"/><path d="M19 19a3 3 0 1 0 0-5.858"/><path d="M12 1a3 3 0 1 0 0 6"/><path d="M12 9a3 3 0 1 0 0 6"/><path d="M12 17a3 3 0 1 0 0 6"/></svg>
-                        <span class="font-bold text-2xl text-sky-600 logo-text">HCI Lab</span>
+                        <span class="font-bold text-2xl text-sky-600 logo-text">HMI Lab</span>
                     </a>
                 </div>
 
@@ -302,7 +302,7 @@
                         Các Nhà Nghiên Cứu Tâm Huyết
                     </p>
                     <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-500">
-                       Gặp gỡ những bộ óc tài năng đang dẫn dắt các dự án đột phá tại HCI Lab.
+                       Gặp gỡ những bộ óc tài năng đang dẫn dắt các dự án đột phá tại HMI Lab.
                     </p>
                 </div>
                 <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -366,7 +366,7 @@
                                 </p>
                                 <a href="#" class="block mt-2">
                                     <p class="text-xl font-semibold text-gray-900">Trình bày về Giao diện người dùng thích ứng tại hội thảo CHI 2025</p>
-                                    <p class="mt-3 text-base text-gray-500">Nghiên cứu của chúng tôi về hệ thống UI tự động điều chỉnh theo ngữ cảnh người dùng đã được chấp nhận tại hội thảo đầu ngành về HCI...</p>
+                                    <p class="mt-3 text-base text-gray-500">Nghiên cứu của chúng tôi về hệ thống UI tự động điều chỉnh theo ngữ cảnh người dùng đã được chấp nhận tại hội thảo đầu ngành về HMI...</p>
                                 </a>
                             </div>
                         </div>
@@ -428,7 +428,7 @@
                 <div class="space-y-8 xl:col-span-1">
                      <a href="#" class="flex items-center space-x-2">
                          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-brain-circuit"><path d="M12 5a3 3 0 1 0-5.993.142"/><path d="M18 5a3 3 0 1 0-5.993.142"/><path d="M5 8.142A3 3 0 1 0 5 14"/><path d="M19 8.142A3 3 0 1 0 19 14"/><path d="M12 13a3 3 0 1 0-5.993.142"/><path d="M18 13a3 3 0 1 0-5.993.142"/><path d="M5 19a3 3 0 1 0 0-5.858"/><path d="M19 19a3 3 0 1 0 0-5.858"/><path d="M12 1a3 3 0 1 0 0 6"/><path d="M12 9a3 3 0 1 0 0 6"/><path d="M12 17a3 3 0 1 0 0 6"/></svg>
-                        <span class="font-bold text-2xl text-sky-500">HCI Lab</span>
+                        <span class="font-bold text-2xl text-sky-500">HMI Lab</span>
                     </a>
                     <p class="text-gray-400 text-base">Phòng Thí Nghiệm Tương Tác Người-Máy<br>Trường Đại học Công nghệ - ĐHQGHN</p>
                     <div class="flex space-x-6">
@@ -469,7 +469,7 @@
                 </div>
             </div>
             <div class="mt-12 border-t border-gray-700 pt-8">
-                <p class="text-base text-gray-400 xl:text-center">&copy; 2025 HCI Lab. All rights reserved.</p>
+                <p class="text-base text-gray-400 xl:text-center">&copy; 2025 HMI Lab. All rights reserved.</p>
             </div>
         </div>
     </footer>
