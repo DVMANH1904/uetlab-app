@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
-
+use App\Models\Notification;
 class User extends Authenticatable
 {
     use HasApiTokens;
@@ -79,5 +79,9 @@ class User extends Authenticatable
     public function labStudentProfile()
     {
         return $this->hasOne(LabStudent::class);
+    }
+    public function notifications()
+    {
+        return $this->morphMany(Notification::class, 'notifiable')->orderBy('created_at', 'desc');
     }
 }
