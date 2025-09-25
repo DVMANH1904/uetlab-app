@@ -15,6 +15,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LabStudentController;
 use App\Http\Controllers\StudentReportController;
 use App\Http\Controllers\ReportCalendarController;
+use App\Http\Controllers\LabScheduleController;
 /*
 |--------------------------------------------------------------------------
 | Routes công khai
@@ -90,4 +91,14 @@ Route::middleware([
     Route::get('/admin/reports-calendar/data', [ReportCalendarController::class, 'data'])->name('admin.reports.data');
     Route::get('/reports/{report}', [ReportCalendarController::class, 'show'])->name('reports.show');
     Route::post('/reports/{report}/respond', [ReportCalendarController::class, 'storeResponse'])->name('reports.respond');
+    Route::get('/lab-schedule', [LabScheduleController::class, 'index'])->name('lab.schedule.index');
+    Route::get('/lab-schedule/events', [LabScheduleController::class, 'events'])->name('lab.schedule.events');
+    Route::post('/lab-schedule', [LabScheduleController::class, 'store'])->name('lab.schedule.store');
+    Route::delete('/lab-schedule/{schedule}', [LabScheduleController::class, 'destroy'])->name('lab.schedule.destroy');
+    Route::get('/admin/manage-schedules', function () {
+        if (! Gate::allows('isAdmin')) {
+            abort(403);
+        }
+        return view('admin.manage-schedules');
+    })->name('admin.manage.schedules');
 });

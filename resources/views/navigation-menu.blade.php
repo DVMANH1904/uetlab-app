@@ -5,9 +5,9 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
+                    <a href="{{ route('home') }}">
                         <!-- <x-application-mark class="block h-9 w-auto" /> -->
-                        <img src="{{ asset("storage/image/HMI_logo.png") }}" alt="logo HMI" class="block h-11 w-auto">
+                        <img src="{{ asset("storage/image/HMI_logo.png") }}" alt="logo HMI" class="block h-12 w-auto">
                     </a>
                 </div>
 
@@ -31,9 +31,19 @@
                         </x-nav-link>
                     @endcan
                     @can('isAdmin')
-                    <x-nav-link :href="route('admin.reports.calendar')" :active="request()->routeIs('admin.reports.calendar')">
-                        {{ __('Báo Cáo') }}
-                    </x-nav-link>
+                        <x-nav-link :href="route('admin.reports.calendar')" :active="request()->routeIs('admin.reports.calendar')">
+                            {{ __('Quản lý Báo Cáo') }}
+                        </x-nav-link>
+                    @endcan
+                    @can('isStudetn')
+                        <x-nav-link :href="route('lab.schedule.index')" :active="request()->routeIs('lab.schedule.index')">
+                            {{ __('Lịch Lên Lab') }}
+                        </x-nav-link>
+                    @endcan
+                    @can('isAdmin')
+                        <x-nav-link :href="route('admin.manage.schedules')" :active="request()->routeIs('admin.manage.schedules')">
+                            {{ __('Quản lý Lịch lên Lab') }}
+                        </x-nav-link>
                     @endcan
                 </div>
             </div>
@@ -179,6 +189,16 @@
             </x-responsive-nav-link>
             @endcan
             
+            <x-responsive-nav-link :href="route('lab.schedule.index')" :active="request()->routeIs('lab.schedule.index')">
+                {{ __('Lịch Lên Lab') }}
+            </x-responsive-nav-link>
+            
+            @can('isAdmin')
+                {{-- Thêm link này --}}
+                <x-responsive-nav-link :href="route('admin.manage.schedules')" :active="request()->routeIs('admin.manage.schedules')">
+                    {{ __('Quản lý Lịch lên Lab') }}
+                </x-responsive-nav-link>
+            @endcan
         </div>
 
         <!-- Responsive Settings Options -->
