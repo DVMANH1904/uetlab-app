@@ -36,7 +36,9 @@ Route::get('/Media-view', function () {
 Route::get('/', function () {
     return view('public.hci-lab');
 })->name('hci-lab');
-
+Route::get('/contact', function () {
+    return view('public.contact');
+})->name('contact');
 /*
 |--------------------------------------------------------------------------
 | Routes cho quản trị (cần đăng nhập)

@@ -156,7 +156,7 @@
             <div class="flex items-center justify-between h-20">
                 <!-- Logo -->
                 <div class="flex-shrink-0">
-                    <a href="#" class="flex items-center space-x-2">
+                    <a href="/" class="flex items-center space-x-2">
                          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-brain-circuit"><path d="M12 5a3 3 0 1 0-5.993.142"/><path d="M18 5a3 3 0 1 0-5.993.142"/><path d="M5 8.142A3 3 0 1 0 5 14"/><path d="M19 8.142A3 3 0 1 0 19 14"/><path d="M12 13a3 3 0 1 0-5.993.142"/><path d="M18 13a3 3 0 1 0-5.993.142"/><path d="M5 19a3 3 0 1 0 0-5.858"/><path d="M19 19a3 3 0 1 0 0-5.858"/><path d="M12 1a3 3 0 1 0 0 6"/><path d="M12 9a3 3 0 1 0 0 6"/><path d="M12 17a3 3 0 1 0 0 6"/></svg>
                         <span class="font-bold text-2xl text-sky-600 logo-text">HMI Lab</span>
                     </a>
@@ -177,7 +177,16 @@
                     </div>
                     <a href="#team" class="nav-link font-medium transition-colors" data-target="team">Đội ngũ</a>
                     <a href="#publications" class="nav-link font-medium transition-colors" data-target="publications">Công bố</a>
-                    <a href="#" class="nav-link font-medium transition-colors">Cơ hội</a>
+                    <!-- <a href="#" class="nav-link font-medium transition-colors">Cơ hội</a> -->
+                    <div class="dropdown">
+                        <a href="#" class="nav-link font-medium transition-colors flex items-center">
+                            Thêm <i data-lucide="chevron-down" class="w-4 h-4 ml-1"></i>
+                        </a>
+                        <div class="dropdown-content">
+                            <a href="{{ route('contact') }}" class="dropdown-link">Liên hệ</a>
+                            <a href="{{ route('hci-lab') }}" class="dropdown-link">Blog</a>
+                            <a href="{{ route('hci-lab') }}" class="dropdown-link">Về chúng tôi</a>
+                    </div>
                 </nav>
 
                 <div class="flex items-center space-x-4">
