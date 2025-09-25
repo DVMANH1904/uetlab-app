@@ -45,6 +45,9 @@
                             {{ __('Quản lý Lịch lên Lab') }}
                         </x-nav-link>
                     @endcan
+                    <x-nav-link :href="route('documents.index')" :active="request()->routeIs('documents.index')">
+                        {{ __('Tài liệu Lab') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -176,7 +179,7 @@
                 {{ __('Diễn Đàn') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('adminstudent')" :active="request()->routeIs('adminstudent')">
-                {{ __('Student') }}
+                {{ __('Sinh viên') }}
             </x-responsive-nav-link>
             @can('isStudent')
                 <x-responsive-nav-link href="{{ route('student.reports') }}" :active="request()->routeIs('student.reports')">
@@ -184,21 +187,24 @@
                 </x-responsive-nav-link>
             @endcan
             @can('isAdmin')
-            <x-responsive-nav-link :href="route('admin.reports.calendar')" :active="request()->routeIs('admin.reports.calendar')">
-                {{ __('Báo Cáo') }}
-            </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.reports.calendar')" :active="request()->routeIs('admin.reports.calendar')">
+                    {{ __('Quản lý Báo Cáo') }}
+                </x-responsive-nav-link>
             @endcan
-            
-            <x-responsive-nav-link :href="route('lab.schedule.index')" :active="request()->routeIs('lab.schedule.index')">
-                {{ __('Lịch Lên Lab') }}
-            </x-responsive-nav-link>
-            
+            @can('isStudent')
+                <x-responsive-nav-link :href="route('lab.schedule.index')" :active="request()->routeIs('lab.schedule.index')">
+                    {{ __('Lịch Lên Lab') }}
+                </x-responsive-nav-link>
+            @endcan
             @can('isAdmin')
                 {{-- Thêm link này --}}
                 <x-responsive-nav-link :href="route('admin.manage.schedules')" :active="request()->routeIs('admin.manage.schedules')">
                     {{ __('Quản lý Lịch lên Lab') }}
                 </x-responsive-nav-link>
             @endcan
+            <x-responsive-nav-link :href="route('documents.index')" :active="request()->routeIs('documents.index')">
+                {{ __('Tài liệu Lab') }}
+            </x-responsive-nav-link>
         </div>
 
         <!-- Responsive Settings Options -->

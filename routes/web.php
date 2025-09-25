@@ -103,4 +103,7 @@ Route::middleware([
         }
         return view('admin.manage-schedules');
     })->name('admin.manage.schedules');
+    Route::get('/documents', function () {
+        return view('documents.index');
+    })->name('documents.index');
 });

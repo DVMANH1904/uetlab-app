@@ -186,6 +186,7 @@
                             <a href="{{ route('contact') }}" class="dropdown-link">Liên hệ</a>
                             <a href="{{ route('hci-lab') }}" class="dropdown-link">Blog</a>
                             <a href="{{ route('hci-lab') }}" class="dropdown-link">Về chúng tôi</a>
+                        </div>
                     </div>
                 </nav>
 
@@ -211,6 +212,7 @@
                 <a href="#team" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50">Đội ngũ</a>
                 <a href="#publications" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50">Công bố</a>
                 <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50">Cơ hội</a>
+                <a href="{{ route('contact') }}"  class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50">Liên hệ</a>
                 <a href="{{ route('login') }}" class="block w-full text-left mt-4 bg-sky-600 text-white font-semibold px-4 py-3 rounded-lg hover:bg-sky-700 transition-colors">
                     Đăng nhập
                 </a>
