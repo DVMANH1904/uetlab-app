@@ -17,33 +17,45 @@
          x-transition:leave="transition ease-in duration-75"
          x-transition:leave-start="transform opacity-100 scale-100"
          x-transition:leave-end="transform opacity-0 scale-95"
-         class="absolute right-0 w-80 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+         class="absolute right-0 w-80 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
          style="display: none;">
         <div class="py-1">
             <div class="px-4 py-2 flex justify-between items-center border-b">
                 <span class="font-semibold">Thông báo</span>
                 @if($unreadCount > 0)
-                    {{-- NÚT NÀY SẼ GỌI markAsRead() MÀ KHÔNG CÓ THAM SỐ --}}
-                    <button wire:click="markAsRead" class="text-xs text-blue-500 hover:underline">Đánh dấu tất cả đã đọc</button>
+                    {{-- Nút này sẽ gọi markAllAsRead() --}}
+                    <button wire:click="markAllAsRead" class="text-xs text-blue-500 hover:underline">Đánh dấu tất cả đã đọc</button>
                 @endif
             </div>
             <div class="max-h-96 overflow-y-auto">
                 @forelse ($notifications as $notification)
-                    @php $data = json_decode($notification->data); @endphp
-                    <a href="{{ route('reports.show', $data->report_id) }}" 
+                    @php $data = $notification->data; @endphp
+
+                    <a href="{{ $data['link'] ?? '#' }}"
                        wire:click.prevent="markAsRead('{{ $notification->id }}')"
                        class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 @if(is_null($notification->read_at)) bg-blue-50 @endif">
-                        
-                        @if($notification->type === 'new_report')
-                            <p><strong>{{ $data->student_name }}</strong> vừa nộp báo cáo mới:</p>
-                            <p class="truncate font-normal">{{ $data->report_title }}</p>
-                        @elseif($notification->type === 'new_response')
-                             <p><strong>{{ $data->responder_name }}</strong> vừa phản hồi báo cáo:</p>
-                             <p class="truncate font-normal">{{ $data->report_title }}</p>
-                        @elseif($notification->type === 'new_student_response')
-                             <p><strong>{{ $data->student_name }}</strong> vừa trả lời phản hồi cho báo cáo:</p>
-                             <p class="truncate font-normal">{{ $data->report_title }}</p>
+
+                        {{-- Logic hiển thị dựa trên 'type' --}}
+                        @if(isset($data['type']) && ($data['type'] === 'new_task' || $data['type'] === 'task_updated'))
+                            <p><strong>{{ $data['message'] }}</strong></p>
+
+                        @elseif(isset($data['type']) && $data['type'] === 'new_report')
+                            <p><strong>{{ $data['student_name'] }}</strong> vừa nộp báo cáo mới:</p>
+                            <p class="truncate font-normal">{{ $data['report_title'] }}</p>
+
+                        @elseif(isset($data['type']) && $data['type'] === 'new_response')
+                             <p><strong>{{ $data['responder_name'] }}</strong> vừa phản hồi báo cáo:</p>
+                             <p class="truncate font-normal">{{ $data['report_title'] }}</p>
+
+                        @elseif(isset($data['type']) && $data['type'] === 'new_student_response')
+                             <p><strong>{{ $data['student_name'] }}</strong> vừa trả lời phản hồi cho báo cáo:</p>
+                             <p class="truncate font-normal">{{ $data['report_title'] }}</p>
+
+                        @else
+                             {{-- Fallback cho các thông báo không xác định --}}
+                            <p>{{ $data['message'] ?? 'Bạn có một thông báo mới.' }}</p>
                         @endif
+
                         <p class="text-xs text-gray-400 mt-1">{{ $notification->created_at->diffForHumans() }}</p>
                     </a>
                 @empty

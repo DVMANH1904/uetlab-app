@@ -16,6 +16,7 @@ use App\Http\Controllers\LabStudentController;
 use App\Http\Controllers\StudentReportController;
 use App\Http\Controllers\ReportCalendarController;
 use App\Http\Controllers\LabScheduleController;
+use App\Http\Controllers\TaskController;
 /*
 |--------------------------------------------------------------------------
 | Routes công khai
@@ -106,4 +107,15 @@ Route::middleware([
     Route::get('/documents', function () {
         return view('documents.index');
     })->name('documents.index');
+    Route::middleware(['can:isAdmin'])->prefix('admin')->name('admin.')->group(function () {
+        Route::get('tasks', [TaskController::class, 'index'])->name('tasks.index'); // Xem tất cả task
+        Route::get('tasks/create', [TaskController::class, 'create'])->name('tasks.create'); // Form tạo task
+        Route::post('tasks', [TaskController::class, 'store'])->name('tasks.store'); // Lưu task mới
+    });
+
+    // == Routes cho Sinh viên ==
+    Route::prefix('student')->name('student.')->group(function () {
+        Route::get('tasks', [TaskController::class, 'myTasks'])->name('tasks.index'); // Xem task của mình
+        Route::patch('tasks/{task}/update-status', [TaskController::class, 'updateStatus'])->name('tasks.updateStatus'); // Cập nhật trạng thái
+    });
 });

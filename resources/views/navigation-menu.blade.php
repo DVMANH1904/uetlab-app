@@ -21,7 +21,7 @@
                     <x-nav-link href="{{ route('home') }}" :active="request()->routeIs('home')">
                         {{ __('Diễn Đàn') }}
                     </x-nav-link>
-                    
+
                     <x-nav-link :href="route('adminstudent')" :active="request()->routeIs('adminstudent')">
                         {{ __('Sinh viên') }}
                     </x-nav-link>
@@ -48,6 +48,16 @@
                     <x-nav-link :href="route('documents.index')" :active="request()->routeIs('documents.index')">
                         {{ __('Tài liệu Lab') }}
                     </x-nav-link>
+                    @can('isAdmin')
+                        <x-nav-link :href="route('admin.tasks.index')" :active="request()->routeIs('admin.tasks.*')">
+                            {{ __('Quản lý Task') }}
+                        </x-nav-link>
+                    @endcan
+                    @can('isStudent')
+                        <x-nav-link href="{{ route('student.tasks.index') }}" :active="request()->routeIs('student.tasks.*')">
+                            {{ __('Task của tôi') }}
+                        </x-nav-link>
+                    @endcan
                 </div>
             </div>
 
@@ -101,7 +111,7 @@
                         </x-dropdown>
                     </div>
                 @endif
-                
+
                 <div class="ms-3 relative">
                     @livewire('notification-bell')
                 </div>
@@ -200,6 +210,16 @@
                 {{-- Thêm link này --}}
                 <x-responsive-nav-link :href="route('admin.manage.schedules')" :active="request()->routeIs('admin.manage.schedules')">
                     {{ __('Quản lý Lịch lên Lab') }}
+                </x-responsive-nav-link>
+            @endcan
+            @can('isAdmin')
+                <x-responsive-nav-link :href="route('admin.tasks.index')" :active="request()->routeIs('admin.tasks.*')">
+                    {{ __('Quản lý Task') }}
+                </x-responsive-nav-link>
+            @endcan
+            @can('isStudent')
+                <x-responsive-nav-link href="{{ route('student.tasks.index') }}" :active="request()->routeIs('student.tasks.*')">
+                    {{ __('Task của tôi') }}
                 </x-responsive-nav-link>
             @endcan
             <x-responsive-nav-link :href="route('documents.index')" :active="request()->routeIs('documents.index')">
