@@ -74,7 +74,7 @@
             color: #0ea5e9 !important;
             font-weight: 600;
         }
-        
+
         /* Dropdown Menu */
         .dropdown {
             position: relative;
@@ -121,7 +121,7 @@
             opacity: 1;
             transform: translateY(0);
         }
-        
+
         /* Back to top button */
         #back-to-top {
             position: fixed;
@@ -244,7 +244,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
                     <div class="animated-element">
-                        <p class="text-4xl lg:text-5xl font-bold text-sky-600">10+</p>
+                        <p class="text-4xl lg:text-5xl font-bold text-sky-600">17+</p>
                         <p class="mt-2 text-sm lg:text-base font-medium text-gray-500">Năm hoạt động</p>
                     </div>
                     <div class="animated-element" style="transition-delay: 100ms;">
@@ -252,11 +252,11 @@
                         <p class="mt-2 text-sm lg:text-base font-medium text-gray-500">Dự án đã thực hiện</p>
                     </div>
                     <div class="animated-element" style="transition-delay: 200ms;">
-                        <p class="text-4xl lg:text-5xl font-bold text-sky-600">20+</p>
+                        <p class="text-4xl lg:text-5xl font-bold text-sky-600">6+</p>
                         <p class="mt-2 text-sm lg:text-base font-medium text-gray-500">Nhà nghiên cứu</p>
                     </div>
                     <div class="animated-element" style="transition-delay: 300ms;">
-                        <p class="text-4xl lg:text-5xl font-bold text-sky-600">100+</p>
+                        <p class="text-4xl lg:text-5xl font-bold text-sky-600">50+</p>
                         <p class="mt-2 text-sm lg:text-base font-medium text-gray-500">Bài báo khoa học</p>
                     </div>
                 </div>
@@ -342,12 +342,12 @@
                         <p class="text-sky-600">Giảng viên</p>
                     </div>
                     <div class="text-center animated-element" style="transition-delay: 450ms;">
-                        <img class="mx-auto h-40 w-40 rounded-full object-cover" src="https://placehold.co/400x400/a0aec0/ffffff?text=KS.+D" alt="Engineer D">
+                        <img class="mx-auto h-40 w-40 rounded-full object-cover" src="{{ asset('storage/image/TS_NgoThiDuyen.jpg') }}" alt="Engineer D">
                         <h3 class="mt-6 text-lg font-medium text-gray-900">ThS. Ngô Thị Duyên</h3>
                         <p class="text-sky-600">Giảng viên</p>
                     </div>
                     <div class="text-center animated-element" style="transition-delay: 450ms;">
-                        <img class="mx-auto h-40 w-40 rounded-full object-cover" src="https://placehold.co/400x400/a0aec0/ffffff?text=KS.+D" alt="Engineer D">
+                        <img class="mx-auto h-40 w-40 rounded-full object-cover" src="{{ asset('storage/image/nguyen-duy-khuong.jpg') }}" alt="Engineer D">
                         <h3 class="mt-6 text-lg font-medium text-gray-900">TS. Nguyễn Duy Khương</h3>
                         <p class="text-sky-600">Giảng viên</p>
                     </div>
@@ -368,46 +368,46 @@
                 <div class="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                     <div class="flex flex-col rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:-translate-y-2 animated-element">
                         <div class="flex-shrink-0">
-                            <img class="h-48 w-full object-cover" src="https://placehold.co/600x400/3498db/ffffff?text=Hoi+thao+CHI" alt="">
+                            <img class="h-48 w-full object-cover" src="{{ asset('storage/image/Blife.jpg') }}" alt="">
                         </div>
                         <div class="flex-1 bg-white p-6 flex flex-col justify-between">
                             <div class="flex-1">
                                 <p class="text-sm font-medium text-sky-600">
-                                    <a href="#" class="hover:underline">Hội thảo quốc tế</a>
+                                    <a href="#" class="hover:underline">Hội thảo Công nghệ</a>
                                 </p>
-                                <a href="#" class="block mt-2">
-                                    <p class="text-xl font-semibold text-gray-900">Trình bày về Giao diện người dùng thích ứng tại hội thảo CHI 2025</p>
-                                    <p class="mt-3 text-base text-gray-500">Nghiên cứu của chúng tôi về hệ thống UI tự động điều chỉnh theo ngữ cảnh người dùng đã được chấp nhận tại hội thảo đầu ngành về HMI...</p>
+                                <a href="{{ route('blife-solution-extended') }}" class="block mt-2">
+                                    <p class="text-xl font-semibold text-gray-900"> Công nghệ và Y học: Giải pháp nâng cao chất lượng cuộc sống</p>
+                                    <p class="mt-3 text-base text-gray-500">PGS. TS. Lê Thanh Hà trình bày giải pháp BLife, một hệ thống toàn diện hỗ trợ giao tiếp cho người bị tổn thương chức năng vận động thông qua tương tác bằng mắt, gợi ý đánh vần thông minh và điều khiển thiết bị nhà thông minh.</p>
                                 </a>
                             </div>
                         </div>
                     </div>
-                     <div class="flex flex-col rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:-translate-y-2 animated-element" style="transition-delay: 150ms;">
+                    <div class="flex flex-col rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:-translate-y-2 animated-element" style="transition-delay: 150ms;">
                         <div class="flex-shrink-0">
-                            <img class="h-48 w-full object-cover" src="https://placehold.co/600x400/2ecc71/ffffff?text=Du+an+VR" alt="">
+                            <img class="h-48 w-full object-cover" src="{{ asset('storage/image/fall-detection-system.jpg') }}" alt="">
                         </div>
                         <div class="flex-1 bg-white p-6 flex flex-col justify-between">
                             <div class="flex-1">
                                 <p class="text-sm font-medium text-sky-600">
-                                    <a href="#" class="hover:underline">Dự án mới</a>
+                                    <a href="#" class="hover:underline">Dự án Nghiên cứu</a>
                                 </p>
-                                <a href="#" class="block mt-2">
-                                    <p class="text-xl font-semibold text-gray-900">Khởi động dự án VR hỗ trợ phục hồi chức năng cho bệnh nhân đột quỵ</p>
-                                    <p class="mt-3 text-base text-gray-500">Dự án kết hợp với bệnh viện trung ương nhằm ứng dụng công nghệ thực tế ảo để đẩy nhanh quá trình hồi phục cho bệnh nhân.</p>
+                                <a href="{{ route('fall-detection') }}" class="block mt-2">
+                                    <p class="text-xl font-semibold text-gray-900">Dự án Phát hiện người ngã qua Camera Giám sát</p>
+                                    <p class="mt-3 text-base text-gray-500">Phòng thí nghiệm đã phát triển thành công công nghệ xử lý ảnh và tương tác người-máy tích hợp vào camera thông thường để cảnh báo tức thì khi có người ngã. Dự án tập trung vào việc tối ưu thuật toán để đưa ra cảnh báo chính xác trong thời gian thực, giải quyết một vấn đề quan trọng trong chăm sóc sức khỏe người cao tuổi.</p>
                                 </a>
                             </div>
                         </div>
                     </div>
                      <div class="flex flex-col rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:-translate-y-2 animated-element" style="transition-delay: 300ms;">
                         <div class="flex-shrink-0">
-                            <img class="h-48 w-full object-cover" src="https://placehold.co/600x400/e74c3c/ffffff?text=Bai+bao+IEEE" alt="">
+                            <img class="h-48 w-full object-cover" src="{{ asset('storage/image/emotion-spectrogram.jpg') }}" alt="">
                         </div>
                         <div class="flex-1 bg-white p-6 flex flex-col justify-between">
                             <div class="flex-1">
                                 <p class="text-sm font-medium text-sky-600">
                                     <a href="#" class="hover:underline">Bài báo khoa học</a>
                                 </p>
-                                <a href="#" class="block mt-2">
+                                <a href="{{ route('emotion-recognition-voice') }}" class="block mt-2">
                                     <p class="text-xl font-semibold text-gray-900">Công bố mô hình AI nhận dạng cảm xúc qua giọng nói</p>
                                     <p class="mt-3 text-base text-gray-500">Bài báo của chúng tôi được xuất bản trên tạp chí IEEE Transactions on Affective Computing, giới thiệu một kiến trúc mới cho...</p>
                                 </a>
@@ -443,9 +443,9 @@
                     </a>
                     <p class="text-gray-400 text-base">Phòng Thí Nghiệm Tương Tác Người-Máy<br>Trường Đại học Công nghệ - ĐHQGHN</p>
                     <div class="flex space-x-6">
-                        <a href="#" class="text-gray-400 hover:text-white"><i data-lucide="twitter"></i></a>
-                        <a href="#" class="text-gray-400 hover:text-white"><i data-lucide="youtube"></i></a>
-                        <a href="#" class="text-gray-400 hover:text-white"><i data-lucide="linkedin"></i></a>
+                        <a href="https://www.facebook.com/UET.VNUH" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white"><i data-lucide="facebook"></i></a>
+                        <a href="https://www.youtube.com/@VNUDHQGHN" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white"><i data-lucide="youtube"></i></a>
+                        <a href="https://www.linkedin.com/school/vnu-uet/" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white"><i data-lucide="linkedin"></i></a>
                     </div>
                 </div>
                 <div class="mt-12 grid grid-cols-2 gap-8 xl:mt-0 xl:col-span-2">
@@ -523,7 +523,7 @@
                 backToTopButton.classList.remove('show');
             }
         });
-        
+
         // Scroll Spy for active navigation link
         const sections = document.querySelectorAll('.section');
         const navLinks = document.querySelectorAll('.nav-link');
@@ -555,12 +555,12 @@
             threshold: 0.1
         });
         animatedElements.forEach(el => animationObserver.observe(el));
-        
+
         // Hero Canvas Animation
         const canvas = document.getElementById('hero-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
-        
+
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = canvas.parentElement.offsetHeight;
@@ -622,7 +622,7 @@
             }
             requestAnimationFrame(animateParticles);
         }
-        
+
         // Debounce resize to avoid performance issues
         let resizeTimer;
         window.addEventListener('resize', () => {

@@ -40,6 +40,17 @@ Route::get('/', function () {
 Route::get('/contact', function () {
     return view('public.contact');
 })->name('contact');
+Route::get('/blife-solution-extended', function () {
+    return view('public.blife-solution-extended');
+})->name('blife-solution-extended');
+
+Route::get('/fall-detection', function () {
+    return view('public.fall-detection');
+})->name('fall-detection');
+
+Route::get('/emotion-recognition-voice', function () {
+    return view('public.emotion-recognition-voice');
+})->name('emotion-recognition-voice');
 /*
 |--------------------------------------------------------------------------
 | Routes cho quản trị (cần đăng nhập)
