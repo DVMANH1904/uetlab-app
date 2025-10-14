@@ -70,8 +70,6 @@
                         <x-nav-link href="{{ route('student.tasks.index') }}" :active="request()->routeIs('student.tasks.*')">
                             {{ __('Task của tôi') }}
                         </x-nav-link>
-                    @endcan
-                    @can('isStudetn') {{-- Keeping user's original gate name --}}
                         <x-nav-link :href="route('lab.schedule.index')" :active="request()->routeIs('lab.schedule.index')">
                             {{ __('Lịch Lên Lab') }}
                         </x-nav-link>
@@ -239,12 +237,11 @@
                 <x-responsive-nav-link href="{{ route('student.tasks.index') }}" :active="request()->routeIs('student.tasks.*')">
                     {{ __('Task của tôi') }}
                 </x-responsive-nav-link>
-            @endcan
-            @can('isStudetn')
                 <x-responsive-nav-link :href="route('lab.schedule.index')" :active="request()->routeIs('lab.schedule.index')">
                     {{ __('Lịch Lên Lab') }}
                 </x-responsive-nav-link>
             @endcan
+
 
             <x-responsive-nav-link :href="route('documents.index')" :active="request()->routeIs('documents.index')">
                 {{ __('Tài liệu Lab') }}
