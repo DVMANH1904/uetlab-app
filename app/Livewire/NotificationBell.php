@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire; // Sử dụng namespace mới của bạn
+namespace App\Livewire;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
@@ -41,10 +41,8 @@ class NotificationBell extends Component
                 if ($notification) {
                     $notification->markAsRead();
 
-                    // SỬA LỖI: Truy cập trực tiếp vào mảng, không dùng json_decode
                     $data = $notification->data;
 
-                    // CẢI TIẾN: Sử dụng 'link' để chuyển hướng, hoạt động với mọi loại thông báo
                     $link = $data['link'] ?? '#';
 
                     return redirect($link);

@@ -6,21 +6,41 @@ use App\Models\WeeklyReport;
 use Illuminate\Http\Request;
 use App\Models\Response;
 use App\Models\User;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
-
 use App\Notifications\NewResponseAdded;
 use App\Notifications\NewStudentResponse;
 
-
-class ReportCalendarController extends Controller
+class ReportController extends Controller
 {
     /**
-     * Hiển thị trang lịch báo cáo.
+     * Hiển thị danh sách báo cáo với chức năng lọc và phân trang.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('admin.reports-calendar');
+        // Bắt đầu câu truy vấn, eager load đúng quan hệ 'labStudent'
+        $query = WeeklyReport::with('labStudent')->latest();
+
+        // Xử lý lọc theo từ khóa (tiêu đề báo cáo hoặc tên sinh viên)
+        if ($request->filled('search')) {
+            $searchTerm = $request->input('search');
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('title', 'like', "%{$searchTerm}%")
+                    ->orWhereHas('labStudent', function($studentQuery) use ($searchTerm) {
+                        $studentQuery->where('name', 'like', "%{$searchTerm}%");
+                    });
+            });
+        }
+
+        // Xử lý lọc theo trạng thái
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
+        }
+
+        $reports = $query->paginate(15);
+
+        return view('admin.reports.index', compact('reports'));
     }
 
     /**
@@ -32,25 +52,6 @@ class ReportCalendarController extends Controller
         return view('reports.show', [
             'report' => $report
         ]);
-    }
-
-    /**
-     * Cung cấp dữ liệu báo cáo dưới dạng JSON cho FullCalendar.
-     */
-    public function data()
-    {
-        $reports = WeeklyReport::with('labStudent')->get();
-        $events = $reports->map(function ($report) {
-            return [
-                'title'           => $report->labStudent->name ?? 'N/A',
-                'start'           => $report->created_at->toIso8601String(),
-                'url'             => route('reports.show', $report->id),
-                'backgroundColor' => '#E6F0FF',
-                'borderColor'     => '#B3D1FF',
-                'textColor'       => '#0A3D91',
-            ];
-        });
-        return response()->json($events);
     }
 
     /**
@@ -74,14 +75,12 @@ class ReportCalendarController extends Controller
                 // LUỒNG 1: Admin gửi phản hồi -> Thông báo cho sinh viên
                 $studentUser = $report->labStudent->user;
                 if ($studentUser) {
-                    // SỬA ĐỔI: Gọi lớp NewResponseAdded
                     $studentUser->notify(new NewResponseAdded($report, $responder));
                 }
             } else {
                 // LUỒNG 2: Sinh viên gửi phản hồi -> Thông báo cho tất cả Admin
                 $admins = User::where('role', 'admin')->get();
                 foreach ($admins as $admin) {
-                    // SỬA ĐỔI: Gọi lớp NewStudentResponse
                     $admin->notify(new NewStudentResponse($report, $responder));
                 }
             }
@@ -90,5 +89,22 @@ class ReportCalendarController extends Controller
         }
 
         return back()->with('success', 'Đã gửi phản hồi thành công!');
+    }
+    public function updateStatus(Request $request, WeeklyReport $report)
+    {
+
+        // 2. Validate dữ liệu đầu vào
+        $request->validate([
+            'status' => 'required|in:approved,rejected',
+        ]);
+
+        // 3. Cập nhật trạng thái
+        $report->update([
+            'status' => $request->status
+        ]);
+
+
+        // 5. Quay lại trang danh sách với thông báo thành công
+        return redirect()->route('admin.reports.index')->with('success', 'Cập nhật trạng thái báo cáo thành công!');
     }
 }

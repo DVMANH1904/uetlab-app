@@ -14,7 +14,7 @@ class NewTaskAssigned extends Notification
 
     public function via(object $notifiable): array
     {
-        return ['database']; // Chỉ lưu vào database
+        return ['database'];
     }
 
     public function toArray(object $notifiable): array

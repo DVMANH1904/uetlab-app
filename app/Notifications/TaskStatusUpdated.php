@@ -21,7 +21,7 @@ class TaskStatusUpdated extends Notification
     {
         return [
             'message' => $this->task->assignee->name . ' vừa cập nhật trạng thái task "' . $this->task->title . '".',
-            'link' => route('admin.tasks.index'), // Link để admin bấm vào
+            'link' => route('admin.tasks.index'),
         ];
     }
 }

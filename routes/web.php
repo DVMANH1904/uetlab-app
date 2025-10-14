@@ -14,7 +14,7 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LabStudentController;
 use App\Http\Controllers\StudentReportController;
-use App\Http\Controllers\ReportCalendarController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\LabScheduleController;
 use App\Http\Controllers\TaskController;
 /*
@@ -22,9 +22,9 @@ use App\Http\Controllers\TaskController;
 | Routes công khai
 |--------------------------------------------------------------------------
 */
-Route::get('/lien-he', function () {
-    return view('Contact.contact');
-})->name('contact');
+// Route::get('/lien-he', function () {
+//     return view('Contact.contact');
+// })->name('contact');
 
 Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
 Route::get('/lich-cong-tac', [WorkScheduleController::class, 'calendarView'])->name('calendar');
@@ -101,10 +101,18 @@ Route::middleware([
     Route::post('/posts/{post}/like', [LikeController::class, 'store'])->name('posts.like');
     Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('posts.comments.store');
     Route::get('/my-reports', [StudentReportController::class, 'index'])->name('student.reports');
-    Route::get('/admin/reports-calendar', [ReportCalendarController::class, 'index'])->name('admin.reports.calendar');
-    Route::get('/admin/reports-calendar/data', [ReportCalendarController::class, 'data'])->name('admin.reports.data');
-    Route::get('/reports/{report}', [ReportCalendarController::class, 'show'])->name('reports.show');
-    Route::post('/reports/{report}/respond', [ReportCalendarController::class, 'storeResponse'])->name('reports.respond');
+    // Route::get('/admin/reports-calendar', [ReportCalendarController::class, 'index'])->name('admin.reports.calendar');
+    // Route::get('/admin/reports-calendar/data', [ReportCalendarController::class, 'data'])->name('admin.reports.data');
+    // Route::get('/reports/{report}', [ReportCalendarController::class, 'show'])->name('reports.show');
+    // Route::post('/reports/{report}/respond', [ReportCalendarController::class, 'storeResponse'])->name('reports.respond');
+    // Route cho report (admin)
+     Route::prefix('admin')->name('admin.')->group(function () {
+        Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+        Route::patch('/reports/{report}/status', [ReportController::class, 'updateStatus'])->name('reports.updateStatus');
+    });
+
+    Route::get('/reports/{report}', [ReportController::class, 'show'])->name('reports.show');
+    Route::post('/reports/{report}/responses', [ReportController::class, 'storeResponse'])->name('reports.responses.store');
     Route::get('/lab-schedule', [LabScheduleController::class, 'index'])->name('lab.schedule.index');
     Route::get('/lab-schedule/events', [LabScheduleController::class, 'events'])->name('lab.schedule.events');
     Route::post('/lab-schedule', [LabScheduleController::class, 'store'])->name('lab.schedule.store');

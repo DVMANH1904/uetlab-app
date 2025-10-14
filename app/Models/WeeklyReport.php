@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Response;
+use App\Models\LabStudent;
 class WeeklyReport extends Model
 {
     use HasFactory;
@@ -19,7 +20,8 @@ class WeeklyReport extends Model
         'report_date',
         'title',
         'content',
-        'file_path'
+        'file_path',
+        'status'
     ];
 
     /**
@@ -27,7 +29,6 @@ class WeeklyReport extends Model
      */
     public function labStudent()
     {
-        // Ghi rõ foreign key `lab_student_id` để code rõ ràng hơn
         return $this->belongsTo(LabStudent::class, 'lab_student_id');
     }
 

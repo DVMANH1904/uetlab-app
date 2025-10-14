@@ -2,7 +2,7 @@
 
 namespace App\Notifications;
 
-use App\Models\WeeklyReport; // <-- Sửa lại tên model báo cáo của bạn nếu cần
+use App\Models\WeeklyReport;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;

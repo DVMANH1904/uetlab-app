@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
-                    
+
                     {{-- Tiêu đề báo cáo --}}
                     <h1 class="text-2xl font-bold text-gray-900">
                         {{ $report->title }}
@@ -34,8 +34,8 @@
                     <div class="mt-6">
                         <h2 class="font-semibold mt-6 prose">Tệp đính kèm:</h2>
                         @if($report->file_path)
-                            <a href="{{ asset('storage/' . $report->file_path) }}" 
-                            target="_blank" 
+                            <a href="{{ asset('storage/' . $report->file_path) }}"
+                            target="_blank"
                             class="text-blue-600 hover:underline">
                                 Xem file đính kèm
                             </a>
@@ -48,7 +48,7 @@
         </div>
         <div class="mt-8 p-6 bg-gray-100 rounded-lg shadow-inner">
             <h3 class="text-xl font-bold text-gray-800 mb-4">Phản hồi báo cáo</h3>
-            <form action="{{ route('reports.respond', $report) }}" method="POST">
+            <form action="{{ route('reports.responses.store', $report) }}" method="POST">
                 @csrf
                 <div>
                     <label for="response_content" class="block text-sm font-medium text-gray-700">Nội dung phản hồi:</label>

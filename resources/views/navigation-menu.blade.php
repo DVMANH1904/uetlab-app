@@ -27,7 +27,7 @@
                         <div class="relative flex" x-data="{ open: false }" @click.away="open = false">
                             <!-- Dropdown Trigger -->
                             <button @click="open = !open" class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out focus:outline-none
-                                @if(request()->routeIs('adminstudent', 'admin.reports.calendar', 'admin.manage.schedules', 'admin.tasks.*'))
+                                @if(request()->routeIs('adminstudent', 'admin.reports.index', 'admin.manage.schedules', 'admin.tasks.*'))
                                     border-indigo-400 text-gray-900 focus:border-indigo-700
                                 @else
                                     border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:text-gray-700 focus:border-gray-300
@@ -49,7 +49,7 @@
                                  class="absolute z-50 mt-16 w-60 rounded-md shadow-lg" style="display: none;" @click="open = false">
                                 <div class="rounded-md ring-1 ring-black ring-opacity-5 py-1 bg-white">
                                     <x-dropdown-link :href="route('adminstudent')">{{ __('Sinh viên') }}</x-dropdown-link>
-                                    <x-dropdown-link :href="route('admin.reports.calendar')">{{ __('Quản lý Báo Cáo') }}</x-dropdown-link>
+                                    <x-dropdown-link :href="route('admin.reports.index')">{{ __('Quản lý Báo Cáo') }}</x-dropdown-link>
                                     <x-dropdown-link :href="route('admin.manage.schedules')">{{ __('Quản lý Lịch lên Lab') }}</x-dropdown-link>
                                     <x-dropdown-link :href="route('admin.tasks.index')">{{ __('Quản lý Task') }}</x-dropdown-link>
                                 </div>
@@ -215,7 +215,7 @@
                     <x-responsive-nav-link :href="route('adminstudent')" :active="request()->routeIs('adminstudent')">
                         {{ __('Sinh viên') }}
                     </x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('admin.reports.calendar')" :active="request()->routeIs('admin.reports.calendar')">
+                    <x-responsive-nav-link :href="route('admin.reports.index')" :active="request()->routeIs('admin.reports.index')">
                         {{ __('Quản lý Báo Cáo') }}
                     </x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('admin.manage.schedules')" :active="request()->routeIs('admin.manage.schedules')">

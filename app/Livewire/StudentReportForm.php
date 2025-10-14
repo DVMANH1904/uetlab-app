@@ -7,7 +7,8 @@ use App\Models\LabStudent;
 use App\Models\WeeklyReport;
 use App\Models\User;
 use Livewire\WithFileUploads;
-
+use Illuminate\Support\Facades\Log;
+use App\Notifications\NewReportSubmitted;
 class StudentReportForm extends Component
 {
     use WithFileUploads;
@@ -30,7 +31,6 @@ class StudentReportForm extends Component
 
     public function loadReports()
     {
-        // Tối ưu: Sắp xếp báo cáo mới nhất lên đầu
         $this->weeklyReports = $this->student->weeklyReports()->latest()->get();
     }
 
@@ -48,7 +48,6 @@ class StudentReportForm extends Component
             $filePath = $this->report_file->store('reports', 'public');
         }
 
-        // --- SỬA LỖI TẠI ĐÂY ---
         // Gán kết quả của hàm create() vào biến $report
         $report = $this->student->weeklyReports()->create([
             'title' => $this->title,
@@ -57,17 +56,19 @@ class StudentReportForm extends Component
             'file_path' => $filePath,
         ]);
 
-        // Giờ đây, biến $report đã tồn tại và có thể sử dụng được
-        $admins = User::where('role', 'admin')->get();
-        foreach ($admins as $admin) {
-            $admin->notifications()->create([
-                'type' => 'new_report',
-                'data' => json_encode([
-                    'report_id' => $report->id,
-                    'report_title' => $report->title,
-                    'student_name' => $this->student->name,
-                ])
-            ]);
+        try {
+            $admins = User::where('role', 'admin')->get();
+            $studentUser = $this->student->user;
+
+            if ($studentUser) {
+                foreach ($admins as $admin) {
+                    $admin->notify(new NewReportSubmitted($report, $studentUser));
+                }
+            } else {
+                Log::warning('Không tìm thấy User tương ứng với LabStudent ID: ' . $this->student->id);
+            }
+        } catch (\Exception $e) {
+            Log::error('Lỗi khi gửi thông báo nộp báo cáo mới: ' . $e->getMessage());
         }
 
         session()->flash('success', 'Nộp báo cáo thành công!');
